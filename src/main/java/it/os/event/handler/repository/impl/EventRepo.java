@@ -1,0 +1,84 @@
+package it.os.event.handler.repository.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Repository;
+
+import it.os.event.handler.entity.EventETY;
+import it.os.event.handler.exception.BusinessException;
+import it.os.event.handler.repository.IEventRepo;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Repository
+@Transactional
+public class EventRepo implements IEventRepo {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Override
+    public String save(EventETY entity) {
+
+        try {
+            entityManager.persist(entity);
+            return entity.getId();
+        } catch (Exception e) {
+            log.error("Error encountered while persisting entity", e);
+            throw new BusinessException("Error encountered while persisting entity", e);
+        }
+    }
+
+    @Override
+    public List<EventETY> getAllIncompletedEvents() {
+        
+        try {
+            return entityManager.createQuery("SELECT e FROM EventETY e WHERE e.completed = false", EventETY.class).getResultList();
+        } catch (Exception e) {
+            log.error("Error encountered while retrieving ordered events", e);
+            throw new BusinessException("Error encountered while retrieving ordered events", e);
+        }
+    }
+
+    @Override
+    public void deleteById(String eventId) {
+
+        try {
+            entityManager.createQuery("DELETE FROM EventETY E WHERE E.id = (:eventId)")
+                    .setParameter("eventId", eventId)
+                    .executeUpdate();
+        } catch (Exception e) {
+            log.error("Error encountered while deleting event", e);
+            throw new BusinessException("Error encountered while deleting event", e);
+        }
+
+    }
+
+    @Override
+    public EventETY findById(String eventId) {
+        try {
+            return entityManager.createQuery("SELECT E FROM EventETY E WHERE E.id = (:eventId)", EventETY.class)
+                    .setParameter("eventId", eventId)
+                    .getSingleResult();
+        } catch (Exception e) {
+            log.error("Error encountered while retrieving event", e);
+            throw new BusinessException("Error encountered while retrieving event", e);
+        }
+    }
+
+    @Override
+    public void update(EventETY event) {
+        try {
+            entityManager.merge(event);
+        } catch (Exception e) {
+            log.error("Error encountered while updating event", e);
+            throw new BusinessException("Error encountered while updating event", e);
+        }
+    }
+
+}

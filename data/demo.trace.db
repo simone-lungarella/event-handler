@@ -1,0 +1,6 @@
+2022-05-28 17:49:28 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "EVENT" not found; SQL statement:
+SELECT * FROM EVENT [42102-200]
+2022-05-28 17:49:32 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "EVENTETY" not found; SQL statement:
+SELECT * FROM EventETY [42102-200]
