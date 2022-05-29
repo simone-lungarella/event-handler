@@ -13,14 +13,6 @@ import it.os.event.handler.entity.StepETY;
 public interface IEventSRV {
 
     /**
-     * Persist a new event.
-     * 
-     * @param event Event to persist.
-     * @return Persisted event identifier.
-     */
-    public String save(EventETY event);
-
-    /**
      * Returns the list of incomplete events ordered by completion percentage.
      * 
      * @return List of incomplete events.

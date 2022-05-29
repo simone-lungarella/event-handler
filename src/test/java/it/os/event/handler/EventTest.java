@@ -1,7 +1,10 @@
 package it.os.event.handler;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -79,4 +82,34 @@ class EventTest {
             assertEquals(step.getEventId(), events.get(0).getId());
         }
     }
+
+    @Test
+    void updateStepTest() {
+        
+        stepSRV.deleteAllSteps();
+        eventSrv.deleteAllEvents();
+        final boolean isPersisted = eventSrv.insertNewEvent("Event to query");
+
+        assumeTrue(isPersisted);
+        assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()));
+
+        final List<EventETY> allEvents = eventSrv.getOrderedEvents();
+        final EventETY vipEvent = allEvents.get(0);
+        
+        assumeFalse(vipEvent == null);
+
+        final List<StepETY> allEventSteps = stepSRV.getAllEventSteps(vipEvent.getId());
+        assertDoesNotThrow(() -> eventSrv.updateEventStep(allEventSteps.get(0)));
+
+        final EventETY updatedVip = eventSrv.findById(vipEvent.getId());
+        assertNull(updatedVip.getCompletionDate());
+        assertFalse(updatedVip.isComplete());
+    
+        assertDoesNotThrow(() -> eventSrv.updateEventStep(allEventSteps.get(allEventSteps.size() - 1)));
+
+        final EventETY updatedCompleteVip = eventSrv.findById(vipEvent.getId());
+        assertNotNull(updatedCompleteVip.getCompletionDate());
+        assertTrue(updatedCompleteVip.isComplete());
+    }
+
 }

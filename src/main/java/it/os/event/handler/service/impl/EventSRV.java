@@ -30,18 +30,6 @@ public class EventSRV implements IEventSRV {
     private IStepSRV stepSrv;
 
     @Override
-    public String save(final EventETY entity) {
-
-        try {
-            return eventRepo.save(entity);
-        } catch (final Exception e) {
-            log.error("Error encountered while persisting entity.", e);
-            throw new BusinessException("Error encountered while persisting entity.", e);
-        }
-
-    }
-
-    @Override
     public List<EventETY> getOrderedEvents() {
 
         final List<EventETY> orderedEvents = new ArrayList<>();
