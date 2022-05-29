@@ -26,11 +26,29 @@ public class EventETY {
 
     @Column
     @NonNull
+    private String name;
+
+    @Column
+    @NonNull
+    private String turbineName;
+
+    @Column
+    @NonNull
+    private String operation;
+
+    @Column
+    @NonNull
     private String description;
 
     @Column
     @NonNull
     private String creationDate;
+
+    @Column
+    private String startingDateEEMM;
+
+    @Column
+    private String endingDateEEMM;
 
     @Column
     private int completedSteps;
