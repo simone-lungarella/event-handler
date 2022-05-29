@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import it.os.event.handler.controller.IEventCTL;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
-import it.os.event.handler.enums.StepTypeEnum;
 import it.os.event.handler.exception.StepNotFoundException;
 import it.os.event.handler.service.IEventSRV;
 import it.os.event.handler.service.IStepSRV;
@@ -78,13 +77,7 @@ public class EventCTL implements IEventCTL {
             step.setComplete(true);
             step.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
             stepSRV.update(step);
-
-            if (StepTypeEnum.CHIUSURA_CANTIERE.equals(StepTypeEnum.get(step.getName()))) {
-                EventETY event = eventSRV.findById(step.getEventId());
-                event.setComplete(true);
-                event.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
-                eventSRV.update(event);
-            }
+            eventSRV.updateEventStep(step);
         } else {
             throw new StepNotFoundException("Step");
         }

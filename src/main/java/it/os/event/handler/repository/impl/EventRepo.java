@@ -1,6 +1,5 @@
 package it.os.event.handler.repository.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -38,7 +37,7 @@ public class EventRepo implements IEventRepo {
     public List<EventETY> getAllIncompletedEvents() {
         
         try {
-            return entityManager.createQuery("SELECT e FROM EventETY e WHERE e.completed = false", EventETY.class).getResultList();
+            return entityManager.createQuery("SELECT e FROM EventETY e WHERE e.isComplete = false", EventETY.class).getResultList();
         } catch (Exception e) {
             log.error("Error encountered while retrieving ordered events", e);
             throw new BusinessException("Error encountered while retrieving ordered events", e);
@@ -78,6 +77,17 @@ public class EventRepo implements IEventRepo {
         } catch (Exception e) {
             log.error("Error encountered while updating event", e);
             throw new BusinessException("Error encountered while updating event", e);
+        }
+    }
+
+    @Override
+    public List<EventETY> getAllCompletedEvents() {
+        
+        try {
+            return entityManager.createQuery("SELECT e FROM EventETY e WHERE e.isComplete = true", EventETY.class).getResultList();
+        } catch (Exception e) {
+            log.error("Error encountered while retrieving events to retain", e);
+            throw new BusinessException("Error encountered while retrieving ordered events to retain", e);
         }
     }
 

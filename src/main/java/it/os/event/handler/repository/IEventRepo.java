@@ -16,4 +16,6 @@ public interface IEventRepo {
 
     void update(EventETY event);
 
+    List<EventETY> getAllCompletedEvents();
+
 }
