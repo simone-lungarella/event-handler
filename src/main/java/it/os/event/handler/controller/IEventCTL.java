@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.OperationTypeEnum;
+import it.os.event.handler.enums.StepTypeEnum;
 
 /**
  * Interface of event controller.
@@ -64,6 +65,15 @@ public interface IEventCTL {
     })
     @GetMapping("/events")
     ResponseEntity<List<EventETY>> getEntities(HttpServletRequest request);
+
+    @Operation(summary = "Returns all events that reached a specific step", description = "Returns all events that reached a specific step", tags = { "Event" })
+    @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = List.class)))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Events retrieved"),
+            @ApiResponse(responseCode = "500", description = "Error while retrieving events")
+    })
+    @GetMapping("/events/step-reached")
+    ResponseEntity<List<EventETY>> getEntities(@RequestParam(value = "reachedStep") StepTypeEnum reachedStep, HttpServletRequest request);
 
     @Operation(summary = "Returns all steps for a given event", description = "Returns all steps for a given event", tags = { "Step" })
     @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = List.class)))

@@ -6,6 +6,7 @@ import java.util.List;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.OperationTypeEnum;
+import it.os.event.handler.enums.StepTypeEnum;
 
 /**
  * Interface service of event handler.
@@ -20,6 +21,14 @@ public interface IEventSRV {
      * @return List of incomplete events.
      */
     public List<EventETY> getOrderedEvents();
+
+    /**
+     * Returns all steps that have reached a specific step.
+     * 
+     * @param reachedStep The step that has been reached.
+     * @return List of steps that have reached the specified step.
+     */
+    public List<EventETY> getEvents(StepTypeEnum reachedStep);
 
     /**
      * Execute the insertion of a new event and its steps.

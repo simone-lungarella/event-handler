@@ -16,6 +16,7 @@ import it.os.event.handler.controller.IEventCTL;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.OperationTypeEnum;
+import it.os.event.handler.enums.StepTypeEnum;
 import it.os.event.handler.exception.StepNotFoundException;
 import it.os.event.handler.service.IEventSRV;
 import it.os.event.handler.service.IStepSRV;
@@ -87,6 +88,14 @@ public class EventCTL implements IEventCTL {
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<EventETY>> getEntities(StepTypeEnum reachedStep, HttpServletRequest request) {
+        log.info("Retrieving all events");
+        
+        final List<EventETY> events = eventSRV.getEvents(reachedStep);
+        return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
 }

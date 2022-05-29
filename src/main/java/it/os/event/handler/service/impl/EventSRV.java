@@ -122,15 +122,21 @@ public class EventSRV implements IEventSRV {
     public void updateEventStep(final StepETY step) {
         try {
             final EventETY event = findById(step.getEventId());
-            event.setCompletedSteps(event.getCompletedSteps() + 1);
+            StepTypeEnum stepType = StepTypeEnum.values()[event.getCompletedSteps()];
 
-            if (StepTypeEnum.CHIUSURA_CANTIERE.equals(StepTypeEnum.get(step.getName()))) {
-                event.setComplete(true);
-                event.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
-            } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
-                event.setEndingDateEEMM(LocalDate.now().toString());
+            if (StepTypeEnum.get(step.getName()).equals(stepType)) {
+                event.setCompletedSteps(event.getCompletedSteps() + 1);
+                
+                if (StepTypeEnum.CHIUSURA_CANTIERE.equals(StepTypeEnum.get(step.getName()))) {
+                    event.setComplete(true);
+                    event.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
+                } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
+                    event.setEndingDateEEMM(LocalDate.now().toString());
+                }
+                update(event);
+            } else {
+                log.warn("The step {} is already set as complete!", step.getName());
             }
-            update(event);
         } catch (final Exception e) {
             log.error("Error encountered while updating an event step.", e);
             throw new BusinessException("Error encountered while updating an event step.", e);
@@ -142,7 +148,7 @@ public class EventSRV implements IEventSRV {
 
         try {
             return eventRepo.getAllCompletedEvents();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("Error encountered while retrieving completed events.", e);
             throw new BusinessException("Error encountered while retrieving completed events.", e);
         }
@@ -154,9 +160,30 @@ public class EventSRV implements IEventSRV {
         try {
             eventRepo.deleteAll();
             stepSrv.deleteAllSteps();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("Error encountered while deleting all events.", e);
             throw new BusinessException("Error encountered while deleting all events.", e);
         }
+    }
+
+    @Override
+    public List<EventETY> getEvents(final StepTypeEnum reachedStep) {
+        
+        final List<EventETY> stepReachedEvent = new ArrayList<>();
+        try {
+            final List<EventETY> events = getOrderedEvents();
+
+            for (final EventETY event : events) {
+                if (event.getCompletedSteps() + 1 == reachedStep.getOrder()) {
+                    stepReachedEvent.add(event);
+                }
+            }
+
+        } catch (final Exception e) {
+            log.error("Error encountered while retrieving events for the step specified.", e);
+            throw new BusinessException("Error encountered while retrieving events for the step specified.", e);
+        }
+
+        return stepReachedEvent;
     }
 }
