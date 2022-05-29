@@ -35,7 +35,7 @@ public interface IEventCTL {
             @ApiResponse(responseCode = "200", description = "Event saved"),
             @ApiResponse(responseCode = "500", description = "Error while saving event")
     })
-    @PostMapping("/event")
+    @PostMapping("/event/{description}")
     ResponseEntity<String> createEvent(@RequestParam(value = "description") String description, HttpServletRequest request);
 
     @Operation(summary = "Deletes an event identified by its Id", description = "Deletes an event identified by its Id", tags = { "Event" })

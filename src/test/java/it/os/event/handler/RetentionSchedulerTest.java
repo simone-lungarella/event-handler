@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 import org.springframework.util.CollectionUtils;
 
 import it.os.event.handler.entity.EventETY;
@@ -27,6 +28,7 @@ import it.os.event.handler.service.IStepSRV;
  * @author Simone Lungarella
  */
 @SpringBootTest(properties = { "event.retention-days=0" })
+@Profile("TEST")
 class RetentionSchedulerTest {
 
     @Autowired
