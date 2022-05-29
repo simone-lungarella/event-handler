@@ -1,9 +1,11 @@
 package it.os.event.handler.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
+import it.os.event.handler.enums.OperationTypeEnum;
 
 /**
  * Interface of event controller.
@@ -36,7 +39,13 @@ public interface IEventCTL {
             @ApiResponse(responseCode = "500", description = "Error while saving event")
     })
     @PostMapping("/event")
-    ResponseEntity<String> createEvent(@RequestParam(value = "description") String description, HttpServletRequest request);
+    ResponseEntity<String> createEvent(
+            @RequestParam(value = "name", required = true) String name, 
+            @RequestParam(value = "turbineName", required = true) String turbineName,
+            @RequestParam(value = "operation", required = true) OperationTypeEnum operation, 
+            @RequestParam(value = "description", required = true) String description,
+            @RequestParam(value = "startEEMM", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startingDateEEMM,
+            HttpServletRequest request);
 
     @Operation(summary = "Deletes an event identified by its Id", description = "Deletes an event identified by its Id", tags = { "Event" })
     @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Void.class)))

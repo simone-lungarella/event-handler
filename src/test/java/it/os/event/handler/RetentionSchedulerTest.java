@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
+import it.os.event.handler.enums.OperationTypeEnum;
 import it.os.event.handler.scheduler.RetentionScheduler;
 import it.os.event.handler.service.IEventSRV;
 import it.os.event.handler.service.IStepSRV;
@@ -26,7 +28,7 @@ import it.os.event.handler.service.IStepSRV;
  * 
  * @author Simone Lungarella
  */
-@SpringBootTest(properties = { "event.retention-days=0" })
+@SpringBootTest(properties = { "event.retention-days=0", "spring.datasource.url=jdbc:h2:file:./data/event-handler-test-db" })
 class RetentionSchedulerTest {
 
     @Autowired
@@ -47,7 +49,7 @@ class RetentionSchedulerTest {
     void testRun() {
 
         // Data preparation
-        final boolean isInserted = eventSRV.insertNewEvent("Event to retain");
+        final boolean isInserted = eventSRV.insertNewEvent("Event name", "Turbine name", OperationTypeEnum.GENERATOR_REPLACING, "Event to retain", LocalDate.now());
 
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 

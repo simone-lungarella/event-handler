@@ -1,6 +1,7 @@
 package it.os.event.handler.controller.impl;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import it.os.event.handler.controller.IEventCTL;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
+import it.os.event.handler.enums.OperationTypeEnum;
 import it.os.event.handler.exception.StepNotFoundException;
 import it.os.event.handler.service.IEventSRV;
 import it.os.event.handler.service.IStepSRV;
@@ -30,11 +32,13 @@ public class EventCTL implements IEventCTL {
     private IStepSRV stepSRV;
 
     @Override
-    public ResponseEntity<String> createEvent(final String description, final HttpServletRequest request) {
+    public ResponseEntity<String> createEvent(
+        final String name, final String turbineName, final OperationTypeEnum operation,
+        final String description, final LocalDate startingEEMM, final HttpServletRequest request) {
 
         log.info("Creation a new event with description: {}", description);
         
-        final boolean isPersisted = eventSRV.insertNewEvent(description);
+        final boolean isPersisted = eventSRV.insertNewEvent(name, turbineName, operation, description, startingEEMM);
 
         if (isPersisted) {
             return new ResponseEntity<>("Event persisted correctly", HttpStatus.OK);

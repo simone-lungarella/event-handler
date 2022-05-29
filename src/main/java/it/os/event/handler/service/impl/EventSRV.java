@@ -1,6 +1,7 @@
 package it.os.event.handler.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
+import it.os.event.handler.enums.OperationTypeEnum;
 import it.os.event.handler.enums.StepTypeEnum;
 import it.os.event.handler.exception.BusinessException;
 import it.os.event.handler.repository.IEventRepo;
@@ -57,13 +59,17 @@ public class EventSRV implements IEventSRV {
     }
 
     @Override
-    public boolean insertNewEvent(final String eventDescription) {
+    public boolean insertNewEvent(final String eventName, final String turbineName, 
+        final OperationTypeEnum operation, final String eventDescription, final LocalDate startingEEMM) {
 
         boolean isSuccessful = false;
         try {
 
-            final EventETY event = new EventETY(eventDescription,
+            final EventETY event = new EventETY(eventName, turbineName, operation.getName(), eventDescription,
                     new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
+
+            event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);
+            
             final String eventId = eventRepo.save(event);
 
             final List<StepETY> steps = stepSrv.generateDefaultSteps(eventId);
@@ -121,6 +127,8 @@ public class EventSRV implements IEventSRV {
             if (StepTypeEnum.CHIUSURA_CANTIERE.equals(StepTypeEnum.get(step.getName()))) {
                 event.setComplete(true);
                 event.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
+            } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
+                event.setEndingDateEEMM(LocalDate.now().toString());
             }
             update(event);
         } catch (final Exception e) {

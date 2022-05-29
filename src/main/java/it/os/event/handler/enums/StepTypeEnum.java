@@ -10,8 +10,9 @@ public enum StepTypeEnum {
     PERMITTING(4, "Permitting", "Permitting"),
     DOCUMENTAZIONE_SICUREZZA(5, "Documentazione sicurezza", "Documentazione sicurezza successiva all'avvio del cantiere"),
     COMPLETAMENTO_OOCC(6, "Completamento attività OOCC", "Completamento attività OOCC"),
-    SMONTAGGIO_PIAZZOLA(7, "Smontaggio piazzola", "Smontaggio piazzola prima del completamento del cantiere"),
-    CHIUSURA_CANTIERE(8, "Chiusura cantiere", "Chiusura cantiere completo");
+    COMPLETAMENTO_EEMM(7, "Completamento attività EEMM", "Completamento attività EEMM"),
+    SMONTAGGIO_PIAZZOLA(8, "Smontaggio piazzola", "Smontaggio piazzola prima del completamento del cantiere"),
+    CHIUSURA_CANTIERE(9, "Chiusura cantiere", "Chiusura cantiere completo");
 
     @Getter
     private Integer order;
