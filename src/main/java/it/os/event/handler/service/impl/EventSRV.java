@@ -54,7 +54,8 @@ public class EventSRV implements IEventSRV {
                     final int currentStep = i;
 
                     log.info("Ordering same percentage events by their creation date");
-                    final List<EventETY> samePercentage = events.stream().filter(ev -> currentStep == ev.getCompletedSteps()).collect(Collectors.toList());
+                    final List<EventETY> samePercentage = events.stream()
+                            .filter(ev -> currentStep == ev.getCompletedSteps()).collect(Collectors.toList());
                     samePercentage.sort((ev1, ev2) -> ev1.getCreationDate().compareTo(ev2.getCreationDate()));
                     orderedEvents.addAll(samePercentage);
                 }
@@ -128,7 +129,7 @@ public class EventSRV implements IEventSRV {
         try {
             final EventETY event = findById(step.getEventId());
             event.setCompletedSteps(event.getCompletedSteps() + 1);
-            
+
             if (StepTypeEnum.CHIUSURA_CANTIERE.equals(StepTypeEnum.get(step.getName()))) {
                 event.setComplete(true);
                 event.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
@@ -142,12 +143,24 @@ public class EventSRV implements IEventSRV {
 
     @Override
     public List<EventETY> getAllCompletedEvents() {
-        
+
         try {
             return eventRepo.getAllCompletedEvents();
         } catch (Exception e) {
             log.error("Error encountered while retrieving completed events.", e);
             throw new BusinessException("Error encountered while retrieving completed events.", e);
+        }
+    }
+
+    @Override
+    public void deleteAllEvents() {
+
+        try {
+            eventRepo.deleteAll();
+            stepSrv.deleteAllSteps();
+        } catch (Exception e) {
+            log.error("Error encountered while deleting all events.", e);
+            throw new BusinessException("Error encountered while deleting all events.", e);
         }
     }
 }

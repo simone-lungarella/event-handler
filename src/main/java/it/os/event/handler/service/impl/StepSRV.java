@@ -95,4 +95,26 @@ public class StepSRV implements IStepSRV {
         }
     }
 
+    @Override
+    public List<StepETY> getAllSteps() {
+        
+        try {
+            return stepRepo.findAll();
+        } catch (Exception e) {
+            log.error("Error encountered while retrieving all steps", e);
+            throw new BusinessException("Error encountered while retrieving all steps", e);
+        }
+    }
+
+    @Override
+    public void deleteAllSteps() {
+        
+        try {
+            stepRepo.deleteAll();
+        } catch (Exception e) {
+            log.error("Error encountered while deleting all steps", e);
+            throw new BusinessException("Error encountered while deleting all steps", e);
+        }
+    }
+
 }

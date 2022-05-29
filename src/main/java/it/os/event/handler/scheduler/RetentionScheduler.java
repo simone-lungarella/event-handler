@@ -15,6 +15,11 @@ import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.service.IEventSRV;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Scheduler that execute retention of events.
+ * 
+ * @author Simone Lungarella
+ */
 @Slf4j
 @Component
 public class RetentionScheduler {

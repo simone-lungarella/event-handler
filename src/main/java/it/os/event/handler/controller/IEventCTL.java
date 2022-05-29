@@ -21,6 +21,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
 
+/**
+ * Interface of event controller.
+ * 
+ * @author Simone Lungarella
+ */
 @RequestMapping("/v1.0.0")
 public interface IEventCTL {
 
@@ -30,7 +35,7 @@ public interface IEventCTL {
             @ApiResponse(responseCode = "200", description = "Event saved"),
             @ApiResponse(responseCode = "500", description = "Error while saving event")
     })
-    @PostMapping("/event/{description}")
+    @PostMapping("/event")
     ResponseEntity<String> createEvent(@RequestParam(value = "description") String description, HttpServletRequest request);
 
     @Operation(summary = "Deletes an event identified by its Id", description = "Deletes an event identified by its Id", tags = { "Event" })
@@ -39,7 +44,7 @@ public interface IEventCTL {
             @ApiResponse(responseCode = "200", description = "Event deleted"),
             @ApiResponse(responseCode = "500", description = "Error while deleting event")
     })
-    @DeleteMapping("/event/{eventId}")
+    @DeleteMapping("/event")
     ResponseEntity<Void> deleteEvent(@RequestParam(value = "eventId") String eventId, HttpServletRequest request);
 
     @Operation(summary = "Returns all events ordered by completion percentage", description = "Returns all events ordered by completion percentage", tags = { "Event" })
@@ -57,7 +62,7 @@ public interface IEventCTL {
             @ApiResponse(responseCode = "200", description = "Steps retrieved"),
             @ApiResponse(responseCode = "500", description = "Error while retrieving steps")
     })
-    @GetMapping("/steps/{eventId}")
+    @GetMapping("/steps")
     ResponseEntity<List<StepETY>> getSteps(@RequestParam(value = "eventId") String eventId, HttpServletRequest request);
 
     @Operation(summary = "Set a step in to a complete state", description = "Set a step in to a complete state", tags = { "Step" })
@@ -67,7 +72,7 @@ public interface IEventCTL {
             @ApiResponse(responseCode = "404", description = "Step not found"),
             @ApiResponse(responseCode = "500", description = "Error while updating step")
     })
-    @PutMapping("/step/complete/{stepId}")
+    @PutMapping("/step/complete")
     ResponseEntity<String> setStepComplete(@RequestParam(value = "stepId") String stepId, HttpServletRequest request);
     
 }
