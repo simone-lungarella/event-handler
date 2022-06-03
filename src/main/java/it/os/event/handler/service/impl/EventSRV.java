@@ -13,7 +13,6 @@ import org.springframework.util.CollectionUtils;
 
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
-import it.os.event.handler.enums.OperationTypeEnum;
 import it.os.event.handler.enums.StepTypeEnum;
 import it.os.event.handler.enums.TurbineStateEnum;
 import it.os.event.handler.exception.BusinessException;
@@ -61,12 +60,12 @@ public class EventSRV implements IEventSRV {
 
     @Override
     public boolean insertNewEvent(final String turbineName, final String eventDescription,
-        final OperationTypeEnum operation, final TurbineStateEnum turbineState, final LocalDate startingEEMM, final LocalDate startingOOCC) {
+        final String operation, final TurbineStateEnum turbineState, final LocalDate startingEEMM, final LocalDate startingOOCC) {
 
         boolean isSuccessful = false;
         try {
 
-            final EventETY event = new EventETY(turbineName, eventDescription, operation.getName(),
+            final EventETY event = new EventETY(turbineName, eventDescription, operation,
                     new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), turbineState.getName());
 
             event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);

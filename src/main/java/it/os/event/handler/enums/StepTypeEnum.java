@@ -9,8 +9,8 @@ public enum StepTypeEnum {
     APERTURA_CANTIERE(3, "Richiesta apertura cantiere", "Invio report a permitting"),
     PERMITTING(4, "Permitting", "Permitting"),
     DOCUMENTAZIONE_SICUREZZA(5, "Documentazione sicurezza", "Documentazione sicurezza successiva all'avvio del cantiere"),
-    COMPLETAMENTO_OOCC(6, "Completamento attività OOCC", "Completamento attività OOCC"),
-    COMPLETAMENTO_EEMM(7, "Completamento attività EEMM", "Completamento attività EEMM"),
+    COMPLETAMENTO_OOCC(6, "Fine attività OOCC", "Completamento attività OOCC"),
+    COMPLETAMENTO_EEMM(7, "Fine attività EEMM", "Completamento attività EEMM"),
     SMONTAGGIO_PIAZZOLA(8, "Smontaggio piazzola", "Smontaggio piazzola prima del completamento del cantiere"),
     CHIUSURA_CANTIERE(9, "Chiusura cantiere", "Chiusura cantiere completo");
 

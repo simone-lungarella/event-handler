@@ -5,7 +5,6 @@ import java.util.List;
 
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
-import it.os.event.handler.enums.OperationTypeEnum;
 import it.os.event.handler.enums.StepTypeEnum;
 import it.os.event.handler.enums.TurbineStateEnum;
 
@@ -42,7 +41,7 @@ public interface IEventSRV {
      * @param startingOOCC Starting OOCC.
      * @return {@code true} if the event is inserted correctly, {@code false} otherwise.
      */
-    public boolean insertNewEvent(String turbineName, String eventDescription, OperationTypeEnum operation, 
+    public boolean insertNewEvent(String turbineName, String eventDescription, String operation, 
         TurbineStateEnum turbineState, LocalDate startingEEMM, LocalDate startingOOCC);
 
     /**

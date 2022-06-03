@@ -50,7 +50,7 @@ class RetentionSchedulerTest {
 
         // Data preparation
         final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "eventDescription",
-                OperationTypeEnum.GENERATOR_REPLACING, TurbineStateEnum.LIMITED,
+                OperationTypeEnum.GENERATOR_REPLACING.getName(), TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
 
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");

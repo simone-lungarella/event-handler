@@ -53,7 +53,7 @@ class EventTest {
                 "The event inserted should be present in the database");
 
         final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "eventDescription",
-                OperationTypeEnum.GENERATOR_REPLACING, TurbineStateEnum.LIMITED,
+                OperationTypeEnum.GENERATOR_REPLACING.getName(), TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
         assertTrue(isPersisted, "The event should have been persisted");
     }
@@ -63,7 +63,7 @@ class EventTest {
 
         // Data preparation
         final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "eventDescription",
-                OperationTypeEnum.GENERATOR_REPLACING, TurbineStateEnum.LIMITED,
+                OperationTypeEnum.GENERATOR_REPLACING.getName(), TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
 
         assumeTrue(isPersisted);
@@ -80,7 +80,7 @@ class EventTest {
         stepSRV.deleteAllSteps();
         eventSrv.deleteAllEvents();
         final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "eventDescription",
-                OperationTypeEnum.GENERATOR_REPLACING, TurbineStateEnum.LIMITED,
+                OperationTypeEnum.GENERATOR_REPLACING.getName(), TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
 
         assumeTrue(isPersisted);
@@ -101,7 +101,7 @@ class EventTest {
         stepSRV.deleteAllSteps();
         eventSrv.deleteAllEvents();
         final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "eventDescription",
-                OperationTypeEnum.GENERATOR_REPLACING, TurbineStateEnum.LIMITED,
+                OperationTypeEnum.GENERATOR_REPLACING.getName(), TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
 
         assumeTrue(isPersisted);

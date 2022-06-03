@@ -2,7 +2,8 @@ package it.os.event.handler.entity;
 
 import java.time.LocalDate;
 
-import it.os.event.handler.enums.OperationTypeEnum;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import it.os.event.handler.enums.TurbineStateEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,11 +20,13 @@ public class EventRequest {
     
     String description;
     
-    OperationTypeEnum operation;
+    String operation;
    
     TurbineStateEnum turbineState;
     
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate startingDateEEMM;
     
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate startingDateOOCC;
 }
