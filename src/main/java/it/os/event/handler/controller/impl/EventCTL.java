@@ -1,8 +1,5 @@
 package it.os.event.handler.controller.impl;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.os.event.handler.controller.IEventCTL;
 import it.os.event.handler.entity.EventETY;
+import it.os.event.handler.entity.EventRequest;
 import it.os.event.handler.entity.StepETY;
-import it.os.event.handler.enums.OperationTypeEnum;
-import it.os.event.handler.enums.StepTypeEnum;
 import it.os.event.handler.exception.StepNotFoundException;
 import it.os.event.handler.service.IEventSRV;
 import it.os.event.handler.service.IStepSRV;
@@ -33,13 +29,12 @@ public class EventCTL implements IEventCTL {
     private IStepSRV stepSRV;
 
     @Override
-    public ResponseEntity<String> createEvent(
-        final String name, final String turbineName, final OperationTypeEnum operation,
-        final String description, final LocalDate startingEEMM, final HttpServletRequest request) {
+    public ResponseEntity<String> createEvent (final EventRequest requestBody, final HttpServletRequest request) {
 
-        log.info("Creation a new event with description: {}", description);
+        log.info("Creation a new event with description: {}", requestBody.getDescription());
         
-        final boolean isPersisted = eventSRV.insertNewEvent(name, turbineName, operation, description, startingEEMM);
+        final boolean isPersisted = eventSRV.insertNewEvent(requestBody.getTurbineName(), requestBody.getDescription(), 
+            requestBody.getOperation(), requestBody.getTurbineState(), requestBody.getStartingDateEEMM(), requestBody.getStartingDateOOCC());
 
         if (isPersisted) {
             return new ResponseEntity<>("Event persisted correctly", HttpStatus.OK);
@@ -49,7 +44,7 @@ public class EventCTL implements IEventCTL {
     }
 
     @Override
-    public ResponseEntity<List<EventETY>> getEntities(final HttpServletRequest request) {
+    public ResponseEntity<List<EventETY>> getAllEvents(final HttpServletRequest request) {
         log.info("Retrieving all events");
         
         final List<EventETY> events = eventSRV.getOrderedEvents();
@@ -57,7 +52,7 @@ public class EventCTL implements IEventCTL {
     }
 
     @Override
-    public ResponseEntity<List<StepETY>> getSteps(final String eventId, final HttpServletRequest request) {
+    public ResponseEntity<List<StepETY>> getStepsByEventId(final String eventId, final HttpServletRequest request) {
 
         log.info("Retrieving all steps for event with id: {}", eventId);
         
@@ -75,12 +70,11 @@ public class EventCTL implements IEventCTL {
     }
 
     @Override
-    public ResponseEntity<String> setStepComplete(final String stepId, HttpServletRequest request) {
+    public ResponseEntity<String> setStepCompletion(final String stepId, final Boolean isComplete, HttpServletRequest request) {
         
         final StepETY step = stepSRV.findById(stepId);
         if (step != null) {
-            step.setComplete(true);
-            step.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
+            step.setComplete(isComplete);
             stepSRV.update(step);
             eventSRV.updateEventStep(step);
         } else {
@@ -91,11 +85,11 @@ public class EventCTL implements IEventCTL {
     }
 
     @Override
-    public ResponseEntity<List<EventETY>> getEntities(StepTypeEnum reachedStep, HttpServletRequest request) {
-        log.info("Retrieving all events");
+    public ResponseEntity<List<StepETY>> getSteps(HttpServletRequest request) {
+        log.info("Retrieving all steps");
         
-        final List<EventETY> events = eventSRV.getEvents(reachedStep);
-        return new ResponseEntity<>(events, HttpStatus.OK);
+        final List<StepETY> steps = stepSRV.getAllSteps();
+        return new ResponseEntity<>(steps, HttpStatus.OK);
     }
 
 }

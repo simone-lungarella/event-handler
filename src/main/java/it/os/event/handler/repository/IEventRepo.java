@@ -24,7 +24,7 @@ public interface IEventRepo {
      * 
      * @return List of incomplete events.
      */
-    List<EventETY> getAllIncompletedEvents();
+    List<EventETY> getAllEvents();
 
     /**
      * Delete the event identified by its {@code eventId} and all its steps.

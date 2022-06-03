@@ -2,7 +2,6 @@ package it.os.event.handler;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,13 +23,14 @@ import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.OperationTypeEnum;
 import it.os.event.handler.enums.StepTypeEnum;
+import it.os.event.handler.enums.TurbineStateEnum;
 import it.os.event.handler.repository.IEventRepo;
 import it.os.event.handler.service.IEventSRV;
 import it.os.event.handler.service.IStepSRV;
 
 @SpringBootTest(properties = { "spring.datasource.url=jdbc:h2:file:./data/event-handler-test-db" })
 class EventTest {
-    
+
     @Autowired
     IEventRepo eventRepo;
 
@@ -42,15 +42,19 @@ class EventTest {
 
     @Test
     void persistingTest() {
-        final String eventId = eventRepo.save(new EventETY("Event name", "Turbine name", OperationTypeEnum.GENERATOR_REPLACING.getDescription(), 
-            "Test description", new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date())));
-        
+        final String eventId = eventRepo.save(new EventETY("Turbine name", "Test description",
+                OperationTypeEnum.GENERATOR_REPLACING.getDescription(),
+                new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), TurbineStateEnum.MARCHING.getName()));
+
         assertNotNull(eventId, "The event id should not be null");
 
-        final List<EventETY> list = eventRepo.getAllIncompletedEvents();
-        assertTrue(list.stream().map(EventETY::getId).collect(Collectors.toList()).contains(eventId), "The event inserted should be present in the database");
-    
-        final boolean isPersisted = eventSrv.insertNewEvent("Event name", "Turbine name", OperationTypeEnum.GENERATOR_REPLACING, "eventDescription", LocalDate.now());
+        final List<EventETY> list = eventRepo.getAllEvents();
+        assertTrue(list.stream().map(EventETY::getId).collect(Collectors.toList()).contains(eventId),
+                "The event inserted should be present in the database");
+
+        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "eventDescription",
+                OperationTypeEnum.GENERATOR_REPLACING, TurbineStateEnum.LIMITED,
+                LocalDate.now(), LocalDate.now());
         assertTrue(isPersisted, "The event should have been persisted");
     }
 
@@ -58,7 +62,9 @@ class EventTest {
     void deletionTest() {
 
         // Data preparation
-        final boolean isPersisted = eventSrv.insertNewEvent("Event name", "Turbine name", OperationTypeEnum.GENERATOR_REPLACING, "Event to delete", LocalDate.now());
+        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "eventDescription",
+                OperationTypeEnum.GENERATOR_REPLACING, TurbineStateEnum.LIMITED,
+                LocalDate.now(), LocalDate.now());
 
         assumeTrue(isPersisted);
         assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()));
@@ -73,7 +79,9 @@ class EventTest {
 
         stepSRV.deleteAllSteps();
         eventSrv.deleteAllEvents();
-        final boolean isPersisted = eventSrv.insertNewEvent("Event name", "Turbine name", OperationTypeEnum.GENERATOR_REPLACING, "Event to query", LocalDate.now());
+        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "eventDescription",
+                OperationTypeEnum.GENERATOR_REPLACING, TurbineStateEnum.LIMITED,
+                LocalDate.now(), LocalDate.now());
 
         assumeTrue(isPersisted);
         assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()));
@@ -89,17 +97,19 @@ class EventTest {
 
     @Test
     void updateStepTest() {
-        
+
         stepSRV.deleteAllSteps();
         eventSrv.deleteAllEvents();
-        final boolean isPersisted = eventSrv.insertNewEvent("Event name", "Turbine name", OperationTypeEnum.GENERATOR_REPLACING, "Event to query", LocalDate.now());
+        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "eventDescription",
+                OperationTypeEnum.GENERATOR_REPLACING, TurbineStateEnum.LIMITED,
+                LocalDate.now(), LocalDate.now());
 
         assumeTrue(isPersisted);
         assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()));
 
         final List<EventETY> allEvents = eventSrv.getOrderedEvents();
         final EventETY vipEvent = allEvents.get(0);
-        
+
         assumeFalse(vipEvent == null);
 
         final List<StepETY> allEventSteps = stepSRV.getAllEventSteps(vipEvent.getId());
@@ -107,13 +117,13 @@ class EventTest {
 
         final EventETY updatedVip = eventSrv.findById(vipEvent.getId());
         assertNull(updatedVip.getCompletionDate());
-        assertFalse(updatedVip.isComplete());
-    
-        assertDoesNotThrow(() -> eventSrv.updateEventStep(allEventSteps.get(allEventSteps.size() - 1)));
+
+        assertDoesNotThrow(() -> eventSrv.updateEventStep(allEventSteps.get(allEventSteps.size() - 2)));
 
         final EventETY updatedCompleteVip = eventSrv.findById(vipEvent.getId());
-        assertNotNull(updatedCompleteVip.getCompletionDate());
-        assertTrue(updatedCompleteVip.isComplete());
+        assertNull(updatedCompleteVip.getCompletionDate());
+
+        assertDoesNotThrow(() -> eventSrv.updateEventStep(allEventSteps.get(allEventSteps.size() - 1)));
     }
 
 }

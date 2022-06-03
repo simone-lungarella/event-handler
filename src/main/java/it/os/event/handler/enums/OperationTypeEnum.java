@@ -5,6 +5,7 @@ import lombok.Getter;
 public enum OperationTypeEnum {
 
     GENERATOR_REPLACING("Sost. generatore", "Rimpiazzo generatore"),
+    GEARBOX_REPLACING("Sost. Gearbox", "Rimpiazzo Gearbox"),
     ROOT_JOINT("Root Joint", "Root joint"),
     PITCH_ROD("Asta pitch", "Asta pitch");
 

@@ -34,10 +34,10 @@ public class EventRepo implements IEventRepo {
     }
 
     @Override
-    public List<EventETY> getAllIncompletedEvents() {
+    public List<EventETY> getAllEvents() {
 
         try {
-            return entityManager.createQuery("SELECT e FROM EventETY e WHERE e.isComplete = false", EventETY.class)
+            return entityManager.createQuery("SELECT e FROM EventETY e", EventETY.class)
                     .getResultList();
         } catch (Exception e) {
             log.error("Error encountered while retrieving ordered events", e);
@@ -85,7 +85,7 @@ public class EventRepo implements IEventRepo {
     public List<EventETY> getAllCompletedEvents() {
 
         try {
-            return entityManager.createQuery("SELECT e FROM EventETY e WHERE e.isComplete = true", EventETY.class)
+            return entityManager.createQuery("SELECT e FROM EventETY e WHERE e.completionDate != null", EventETY.class)
                     .getResultList();
         } catch (Exception e) {
             log.error("Error encountered while retrieving events to retain", e);

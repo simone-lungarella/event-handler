@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.OperationTypeEnum;
+import it.os.event.handler.enums.TurbineStateEnum;
 import it.os.event.handler.scheduler.RetentionScheduler;
 import it.os.event.handler.service.IEventSRV;
 import it.os.event.handler.service.IStepSRV;
@@ -28,7 +27,8 @@ import it.os.event.handler.service.IStepSRV;
  * 
  * @author Simone Lungarella
  */
-@SpringBootTest(properties = { "event.retention-days=0", "spring.datasource.url=jdbc:h2:file:./data/event-handler-test-db" })
+@SpringBootTest(properties = { "event.retention-days=0",
+        "spring.datasource.url=jdbc:h2:file:./data/event-handler-test-db" })
 class RetentionSchedulerTest {
 
     @Autowired
@@ -49,7 +49,9 @@ class RetentionSchedulerTest {
     void testRun() {
 
         // Data preparation
-        final boolean isInserted = eventSRV.insertNewEvent("Event name", "Turbine name", OperationTypeEnum.GENERATOR_REPLACING, "Event to retain", LocalDate.now());
+        final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "eventDescription",
+                OperationTypeEnum.GENERATOR_REPLACING, TurbineStateEnum.LIMITED,
+                LocalDate.now(), LocalDate.now());
 
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
@@ -60,7 +62,6 @@ class RetentionSchedulerTest {
         for (StepETY step : steps) {
             StepETY updatedStep = new StepETY(step.getEventId(), step.getName(), step.getDescription());
             updatedStep.setComplete(true);
-            updatedStep.setCompletionDate(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
             stepSRV.update(updatedStep);
         }
 

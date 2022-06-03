@@ -41,7 +41,4 @@ public class StepETY {
     @Column
     private boolean isComplete;
 
-    @Column
-    private String completionDate;
-
 }

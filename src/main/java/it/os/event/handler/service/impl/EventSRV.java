@@ -15,6 +15,7 @@ import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.OperationTypeEnum;
 import it.os.event.handler.enums.StepTypeEnum;
+import it.os.event.handler.enums.TurbineStateEnum;
 import it.os.event.handler.exception.BusinessException;
 import it.os.event.handler.repository.IEventRepo;
 import it.os.event.handler.service.IEventSRV;
@@ -36,7 +37,7 @@ public class EventSRV implements IEventSRV {
 
         final List<EventETY> orderedEvents = new ArrayList<>();
         try {
-            final List<EventETY> events = eventRepo.getAllIncompletedEvents();
+            final List<EventETY> events = eventRepo.getAllEvents();
 
             log.info("Ordering events by their completion percentage");
             if (!CollectionUtils.isEmpty(events)) {
@@ -59,16 +60,17 @@ public class EventSRV implements IEventSRV {
     }
 
     @Override
-    public boolean insertNewEvent(final String eventName, final String turbineName, 
-        final OperationTypeEnum operation, final String eventDescription, final LocalDate startingEEMM) {
+    public boolean insertNewEvent(final String turbineName, final String eventDescription,
+        final OperationTypeEnum operation, final TurbineStateEnum turbineState, final LocalDate startingEEMM, final LocalDate startingOOCC) {
 
         boolean isSuccessful = false;
         try {
 
-            final EventETY event = new EventETY(eventName, turbineName, operation.getName(), eventDescription,
-                    new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
+            final EventETY event = new EventETY(turbineName, eventDescription, operation.getName(),
+                    new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), turbineState.getName());
 
             event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);
+            event.setStartingDateOOCC(startingOOCC != null ? startingOOCC.toString() : null);
             
             final String eventId = eventRepo.save(event);
 
@@ -122,21 +124,30 @@ public class EventSRV implements IEventSRV {
     public void updateEventStep(final StepETY step) {
         try {
             final EventETY event = findById(step.getEventId());
-            StepTypeEnum stepType = StepTypeEnum.values()[event.getCompletedSteps()];
-
-            if (StepTypeEnum.get(step.getName()).equals(stepType)) {
+            
+            if (step.isComplete()) {
                 event.setCompletedSteps(event.getCompletedSteps() + 1);
                 
                 if (StepTypeEnum.CHIUSURA_CANTIERE.equals(StepTypeEnum.get(step.getName()))) {
-                    event.setComplete(true);
                     event.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
                 } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
-                    event.setEndingDateEEMM(LocalDate.now().toString());
+                    event.setCompletionDateEEMM(LocalDate.now().toString());
+                } else if (StepTypeEnum.COMPLETAMENTO_OOCC.equals(StepTypeEnum.get(step.getName()))) {
+                    event.setCompletionDateOOCC(LocalDate.now().toString());
                 }
-                update(event);
             } else {
-                log.warn("The step {} is already set as complete!", step.getName());
+                event.setCompletedSteps(event.getCompletedSteps() - 1);
+                
+                if (StepTypeEnum.CHIUSURA_CANTIERE.equals(StepTypeEnum.get(step.getName()))) {
+                    event.setCompletionDate(null);
+                } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
+                    event.setCompletionDateEEMM(null);
+                } else if (StepTypeEnum.COMPLETAMENTO_OOCC.equals(StepTypeEnum.get(step.getName()))) {
+                    event.setCompletionDateOOCC(null);
+                }
             }
+            update(event);
+
         } catch (final Exception e) {
             log.error("Error encountered while updating an event step.", e);
             throw new BusinessException("Error encountered while updating an event step.", e);

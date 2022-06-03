@@ -26,15 +26,7 @@ public class EventETY {
 
     @Column
     @NonNull
-    private String name;
-
-    @Column
-    @NonNull
     private String turbineName;
-
-    @Column
-    @NonNull
-    private String operation;
 
     @Column
     @NonNull
@@ -42,21 +34,32 @@ public class EventETY {
 
     @Column
     @NonNull
+    private String operation;
+
+    @Column
+    @NonNull
     private String creationDate;
 
     @Column
-    private String startingDateEEMM;
-
-    @Column
-    private String endingDateEEMM;
+    @NonNull
+    private String turbineState;
 
     @Column
     private int completedSteps;
 
     @Column
-    private boolean isComplete;
+    private String startingDateEEMM;
+
+    @Column
+    private String startingDateOOCC;
 
     @Column
     private String completionDate;
+
+    @Column
+    private String completionDateEEMM;
+
+    @Column
+    private String completionDateOOCC;
 
 }
