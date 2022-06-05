@@ -8,7 +8,6 @@ import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -23,9 +22,6 @@ public class PersistenceJPAConfig{
 
     @Autowired
     private H2Cfg h2CFG;
-
-    @Autowired
-    private Environment env;
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -67,12 +63,7 @@ public class PersistenceJPAConfig{
     Properties additionalProperties() {
         Properties properties = new Properties();
 
-        String[] profiles = env.getActiveProfiles();
-        if (profiles.length > 0 && (profiles[0].equals("test") || profiles[0].equals("dev"))) {
-            properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-        } else {
-            properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        }
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty("hibernate.dialect", h2CFG.getDialect());
 
         return properties;
