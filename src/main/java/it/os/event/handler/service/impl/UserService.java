@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,12 +26,6 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private IUserRepo userRepo;
-
-	@Value("${admin-username}")
-	private String adminUsername;
-
-	@Value("${admin-password}")
-	private String adminPassword;
 
 	@Override
 	public UserDetails loadUserByUsername(final String username) throws UserNotFoundException {

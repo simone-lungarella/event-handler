@@ -48,6 +48,7 @@ public class UserCTL implements IUserCTL {
     @Override
     public ResponseEntity<String> createUser(RegistrationRequest registrationRequest, HttpServletRequest request) {
 
+        log.info("Creating a user with username: {}", registrationRequest.getUsername());
         if (!isAdminUser()) {
             throw new AdminRequiredException(ADMIN_REQUIRED_MSG);
         }
@@ -65,9 +66,12 @@ public class UserCTL implements IUserCTL {
 
     @Override
     public List<UserDetails> getAllUsers(HttpServletRequest request) {
-        if (!isAdminUser()) {
-            throw new AdminRequiredException(ADMIN_REQUIRED_MSG);
-        }
+        // if (!isAdminUser()) {
+        //     throw new AdminRequiredException(ADMIN_REQUIRED_MSG);
+        // }
+
+        // String token = request.getHeader("Authorization");
+
         return userService.getAllUsers();
     }
 
