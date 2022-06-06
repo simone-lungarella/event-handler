@@ -33,7 +33,7 @@ public class StepSRV implements IStepSRV {
     }
 
     @Override
-    public String saveStep(final StepETY step) {
+    public Integer saveStep(final StepETY step) {
         try {
             return stepRepo.save(step);
         } catch (final Exception e) {

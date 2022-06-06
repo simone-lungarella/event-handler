@@ -1,17 +1,16 @@
 package it.os.event.handler.config;
 
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -21,62 +20,55 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class PersistenceJPAConfig{
 
-    @Autowired
-    private H2Cfg h2CFG;
+	@Autowired
+	private DbCfg dbCFG;
+	
+	@Bean
+	public DataSource generateDS() { 
+		return buildDatasource(dbCFG.getUrl(),dbCFG.getUsername(),dbCFG.getPassword(),dbCFG.getDriver());
+	}
 
-    @Autowired
-    private Environment env;
+	/**
+	 * Builds the Datasources using configuration params.
+	 * 
+	 * @param url      URL of DataSource.
+	 * @param username Username of Database.
+	 * @param pwd      Password to access Database.
+	 * @param driver   Driver of database to use for setting up the DataSource.
+	 * @return A usable DataSource.
+	 */
+	private DataSource buildDatasource(final String url, final String username, final String pwd, final String driver) {
+		DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
+		dataSourceBuilder.url(url);
+		dataSourceBuilder.username(username);
+		dataSourceBuilder.password(pwd);
+		dataSourceBuilder.driverClassName(driver);
+		return dataSourceBuilder.build();
+	}
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource());
-        em.setPackagesToScan("it.os.event.handler.entity");
+	@Bean
+	@Primary
+	public LocalContainerEntityManagerFactoryBean userEntityManager() {
+		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+		em.setDataSource(generateDS());
+		em.setPackagesToScan("it.os.event.handler.entity");
+		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+		vendorAdapter.setShowSql(true);
+		em.setJpaVendorAdapter(vendorAdapter);
+		Map<String, Object> properties = new HashMap<>(); 
 
-        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        em.setJpaVendorAdapter(vendorAdapter);
-        em.setJpaProperties(additionalProperties());
+		properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL55Dialect");
+		properties.put("hibernate.hbm2ddl.auto", "update");
+		em.setJpaPropertyMap(properties);
+		return em;
+	} 
 
-        return em;
-    }
-
-    @Bean
-    public DataSource dataSource() {
-        final BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(h2CFG.getDriver());
-        dataSource.setUrl(h2CFG.getUrl());
-        dataSource.setUsername(h2CFG.getUsername());
-        dataSource.setPassword(h2CFG.getPassword());
-
-        return dataSource;
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-
-        return transactionManager;
-    }
-
-    @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
-        return new PersistenceExceptionTranslationPostProcessor();
-    }
-
-    Properties additionalProperties() {
-        Properties properties = new Properties();
-
-        String[] profiles = env.getActiveProfiles();
-        if (profiles.length > 0 && (profiles[0].equals("test") || profiles[0].equals("dev"))) {
-            properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-        } else {
-            properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        }
-        properties.setProperty("hibernate.dialect", h2CFG.getDialect());
-
-        return properties;
-    }
-
+	@Primary
+	@Bean
+	public PlatformTransactionManager userTransactionManager() {
+		JpaTransactionManager transactionManager = new JpaTransactionManager();
+		transactionManager.setEntityManagerFactory(userEntityManager().getObject()); 
+		return transactionManager;
+	}
 
 }

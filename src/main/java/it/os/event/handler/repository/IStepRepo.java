@@ -17,7 +17,7 @@ public interface IStepRepo {
      * @param step Step to persist.
      * @return Persisted step identifier.
      */
-    String save(StepETY step);
+    Integer save(StepETY step);
 
     /**
      * Persists a list of steps.

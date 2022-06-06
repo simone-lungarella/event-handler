@@ -23,7 +23,7 @@ public class StepRepo implements IStepRepo {
     private EntityManager entityManager;
 
     @Override
-    public String save(final StepETY step) {
+    public Integer save(final StepETY step) {
 
         try {
             entityManager.persist(step);

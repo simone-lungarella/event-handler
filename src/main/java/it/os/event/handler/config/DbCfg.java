@@ -7,21 +7,20 @@ import lombok.Getter;
 
 @Getter
 @Component
-public class H2Cfg {
+public class DbCfg {
 
     @Value("${spring.datasource.url}")
     private String url;
-
-    @Value("${spring.datasource.driverClassName}")
-    private String driver;
-
+ 
     @Value("${spring.datasource.username}")
     private String username;
 
     @Value("${spring.datasource.password}")
     private String password;
+    
+    @Value("${spring.datasource.driver}")
+    private String driver;
 
-    @Value("${spring.jpa.database-platform}")
-    private String dialect;
-
+    
 }
+

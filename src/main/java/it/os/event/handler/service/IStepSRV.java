@@ -20,7 +20,7 @@ public interface IStepSRV {
      * @param step New step to persist.
      * @return Persisted step identifier.
      */
-    String saveStep(StepETY step);
+    Integer saveStep(StepETY step); 
 
     /**
      * Persists a list of steps.
