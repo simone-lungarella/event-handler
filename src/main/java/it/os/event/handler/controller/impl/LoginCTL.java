@@ -52,10 +52,10 @@ public class LoginCTL {
     @GetMapping("login")
     AuthInfo login(final String username, final String password) {
 
-        AuthInfo authInfo = new AuthInfo();
+        final AuthInfo authInfo = new AuthInfo();
         
         log.info("Retrieving user with username {}", username);
-        Optional<UserETY> user = userRepo.findByUsername(username);
+        final Optional<UserETY> user = userRepo.findByUsername(username);
 
         // Checking if user exists
         if (user.isPresent()) {
@@ -63,13 +63,13 @@ public class LoginCTL {
             log.info("User found");
 
             // Validating user password
-            boolean isValidPassword = BCrypt.checkpw(password, user.get().getPassword());
+            final boolean isValidPassword = BCrypt.checkpw(password, user.get().getPassword());
             if (isValidPassword) {
             
                 log.info("Password validated, proceeding to generate a jwt token");
                 
                 // Generate jwt token from username and password
-                Authentication authentication = authenticationManager.authenticate(
+                final Authentication authentication = authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(username, password));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -82,41 +82,14 @@ public class LoginCTL {
         return authInfo;
     }
 
-    private String generateJwtToken(Authentication authentication) {
+    private String generateJwtToken(final Authentication authentication) {
         
-        UserETY userAuth = (UserETY) authentication.getPrincipal();
-        
-        final String secret = "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4";
-        Key signingKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
+        final UserETY userAuth = (UserETY) authentication.getPrincipal();
+        final Key signingKey = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
 
         return Jwts.builder().setSubject(userAuth.getUsername()).setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + 31556952000l))
                 .signWith(SignatureAlgorithm.HS256, signingKey).compact();
-        // Key signingKey = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
-
-        // return Jwts.builder()
-        //         .setSubject((userAuth.getUsername()))
-        //         .setIssuedAt(new Date())
-        //         .setExpiration(new Date((new Date()).getTime() + jwtTokenTime))
-        //         .signWith(SignatureAlgorithm.HS256, signingKey)
-        //         .compact();
-    }
-
-    public static void main(String[] args) {
-        final String username = "admin";
-		final String secret = "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4";
-        Key signingKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
-
-        String token = Jwts.builder().setSubject(("admin")).setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + 31556952000l))
-                .signWith(SignatureAlgorithm.HS256, signingKey).compact();
-
-        log.info(token);
-        token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NDU4MTYxMCwiZXhwIjoxNjg2MTM4NTYyfQ.j9HjMcVSZWGzKKS_FLvQSDaq5crGXB1Sp2v_4hY25sA";
-        log.info(token);
-        Claims claims = Jwts.parser().setSigningKey(secret.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(token.trim()).getBody();
-
-        log.info(claims.getSubject());
     }
 
 }

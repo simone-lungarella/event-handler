@@ -1,6 +1,7 @@
 package it.os.event.handler.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
+    @Value("${jwt-token.secret}")
+    private String jwtSecret;
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
@@ -31,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated().and()
                 .formLogin();
         http.httpBasic();
-        http.addFilterBefore(new AuthTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new AuthTokenFilter(userService, jwtSecret), UsernamePasswordAuthenticationFilter.class);
 
     }
 

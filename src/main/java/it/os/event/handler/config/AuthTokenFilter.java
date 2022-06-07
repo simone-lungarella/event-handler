@@ -1,44 +1,41 @@
 package it.os.event.handler.config;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
 import it.os.event.handler.service.impl.UserService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Service
 @Slf4j
+@AllArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     /*
      * The user details service.
      */
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Value("${jwt-token.secret}")
-    private String jwtSecret;
+    private final String jwtSecret;
 
     /**
      * Do filter internal.
@@ -58,15 +55,23 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             final String jwt = parseJwt(request);
             if (!StringUtils.isEmpty(jwt) && isValidJwtToken(jwt)) {
 
+                final String[] chunks = jwt.split("\\.");
+                final String header = new String(Base64.getUrlDecoder().decode(chunks[0]));
+                
+                final String algorithm = StringUtils.substringBetween(header, "\"alg\":\"", "\"");
+                final SignatureAlgorithm sa = SignatureAlgorithm.valueOf(algorithm);
+                
+                final SecretKeySpec secretKeySpec = new SecretKeySpec(jwtSecret.getBytes(), sa.getJcaName());
+
                 final String username = Jwts.parser()
-                        .setSigningKey(Base64.getDecoder().decode(jwtSecret))
-                                    .parseClaimsJws(jwt)
-                                    .getBody()
-                                    .getSubject();
-                                    
+                        .setSigningKey(secretKeySpec)
+                        .parseClaimsJws(jwt)
+                        .getBody()
+                        .getSubject();
+
                 log.info("Extracted user with username {} in jwt token", username);
+                
                 final UserDetails userDetails = userService.loadUserByUsername(username);
-                log.info("Loaded user with username {}", userDetails.getUsername());
                 final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
 
@@ -85,19 +90,37 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         log.info("Validating jwt");
         boolean isValidJwtToken = true;
         try {
-            log.info(token);
-		    
-            final String secret = "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4";
-            Claims claims = Jwts.parser().setSigningKey(secret.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(token.trim()).getBody();
-            isValidJwtToken = claims != null;
 
-        } catch (MalformedJwtException e) {
+            final String[] chunks = token.split("\\.");
+            final Base64.Decoder decoder = Base64.getUrlDecoder();
+
+            final String header = new String(decoder.decode(chunks[0]));
+
+            final String tokenWithoutSignature = chunks[0] + "." + chunks[1];
+            final String signature = chunks[2];
+
+            final String algorithm = StringUtils.substringBetween(header, "\"alg\":\"", "\"");
+            
+            final SignatureAlgorithm sa = SignatureAlgorithm.valueOf(algorithm);
+            final SecretKeySpec secretKeySpec = new SecretKeySpec(jwtSecret.getBytes(), sa.getJcaName());
+
+            final DefaultJwtSignatureValidator validator = new DefaultJwtSignatureValidator(sa, secretKeySpec);
+
+            log.info("Proceeding with validation of token");
+            if (!validator.isValid(tokenWithoutSignature, signature)) {
+                log.info("Token is not valid");
+                isValidJwtToken = false;
+            } else {
+                log.info("Token validated correctly");
+            }
+
+        } catch (final MalformedJwtException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
+        } catch (final ExpiredJwtException e) {
             log.error("JWT token is expired: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
+        } catch (final UnsupportedJwtException e) {
             log.error("JWT token is unsupported: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             log.error("JWT claims string is empty: {}", e.getMessage());
         } catch (final Exception e) {
             log.warn("Token invalid: {}", e);
@@ -111,9 +134,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         log.info("Parsing jwt token");
         final String headerAuth = request.getHeader("Authorization");
-        log.info(headerAuth);
 
-        if (!StringUtils.isEmpty(headerAuth) && headerAuth.startsWith("bearer ")) {
+        if (!StringUtils.isEmpty(headerAuth) && (headerAuth.startsWith("bearer ") || headerAuth.startsWith("Bearer "))) {
             return headerAuth.substring(7, headerAuth.length());
         } else {
             log.info("No token found in request: {}", headerAuth);
