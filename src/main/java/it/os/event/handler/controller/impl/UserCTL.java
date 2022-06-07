@@ -66,11 +66,9 @@ public class UserCTL implements IUserCTL {
 
     @Override
     public List<UserDetails> getAllUsers(HttpServletRequest request) {
-        // if (!isAdminUser()) {
-        //     throw new AdminRequiredException(ADMIN_REQUIRED_MSG);
-        // }
-
-        // String token = request.getHeader("Authorization");
+        if (!isAdminUser()) {
+            throw new AdminRequiredException(ADMIN_REQUIRED_MSG);
+        }
 
         return userService.getAllUsers();
     }

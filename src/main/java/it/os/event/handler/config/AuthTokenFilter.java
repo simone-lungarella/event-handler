@@ -1,8 +1,8 @@
 package it.os.event.handler.config;
 
 import java.io.IOException;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Calendar;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -16,20 +16,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.auth0.jwk.Jwk;
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.UrlJwkProvider;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import it.os.event.handler.exception.BusinessException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import it.os.event.handler.service.impl.UserService;
 import lombok.extern.slf4j.Slf4j;
 
+@Service
 @Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
 
@@ -55,43 +53,54 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
             final FilterChain filterChain)
             throws ServletException, IOException {
+
         try {
             final String jwt = parseJwt(request);
-            if (!StringUtils.isEmpty(jwt) && validateJwtToken(jwt)) {
+            if (!StringUtils.isEmpty(jwt) && isValidJwtToken(jwt)) {
 
-                final String username = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody()
-                        .getSubject();
-
+                final String username = Jwts.parser()
+                        .setSigningKey(Base64.getDecoder().decode(jwtSecret))
+                                    .parseClaimsJws(jwt)
+                                    .getBody()
+                                    .getSubject();
+                                    
+                log.info("Extracted user with username {} in jwt token", username);
                 final UserDetails userDetails = userService.loadUserByUsername(username);
+                log.info("Loaded user with username {}", userDetails.getUsername());
                 final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null,
-                        userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        userDetails, null, userDetails.getAuthorities());
 
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (final Exception e) {
-            log.error("Cannot set user authentication: {}", e);
+            log.error("Cannot set user authentication", e);
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private boolean validateJwtToken(final String token) {
+    private boolean isValidJwtToken(final String token) {
 
+        log.info("Validating jwt");
         boolean isValidJwtToken = true;
         try {
-            final DecodedJWT jwt = JWT.decode(token);
-            final JwkProvider provider = new UrlJwkProvider("http://localhost:8080");
+            log.info(token);
+		    
+            final String secret = "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4";
+            Claims claims = Jwts.parser().setSigningKey(secret.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(token.trim()).getBody();
+            isValidJwtToken = claims != null;
 
-            final Jwk jwk = provider.get(jwt.getKeyId());
-            final Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
-            algorithm.verify(jwt);
-
-            if (jwt.getExpiresAt().before(Calendar.getInstance().getTime())) {
-                throw new BusinessException("The token is expired!");
-            }
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("JWT token is unsupported: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty: {}", e.getMessage());
         } catch (final Exception e) {
+            log.warn("Token invalid: {}", e);
             isValidJwtToken = false;
         }
 
@@ -99,12 +108,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     private String parseJwt(final HttpServletRequest request) {
-        final String headerAuth = request.getHeader("Authorization");
 
-        if (!StringUtils.isEmpty(headerAuth) && headerAuth.startsWith("Bearer ")) {
+        log.info("Parsing jwt token");
+        final String headerAuth = request.getHeader("Authorization");
+        log.info(headerAuth);
+
+        if (!StringUtils.isEmpty(headerAuth) && headerAuth.startsWith("bearer ")) {
             return headerAuth.substring(7, headerAuth.length());
+        } else {
+            log.info("No token found in request: {}", headerAuth);
+            return null;
         }
 
-        return null;
     }
 }

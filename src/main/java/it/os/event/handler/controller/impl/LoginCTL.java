@@ -1,7 +1,11 @@
 package it.os.event.handler.controller.impl;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
+
+import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,10 +14,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import it.os.event.handler.entity.AuthInfo;
@@ -23,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@CrossOrigin(origins = "${allowed-cross-orgin}")
 @RequestMapping("/")
 public class LoginCTL {
 
@@ -71,7 +79,6 @@ public class LoginCTL {
             }
         }
 
-        log.info("Token generated");
         return authInfo;
     }
 
@@ -79,11 +86,37 @@ public class LoginCTL {
         
         UserETY userAuth = (UserETY) authentication.getPrincipal();
         
-        return Jwts.builder()
-                .setSubject((userAuth.getUsername()))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtTokenTime))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
+        final String secret = "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4";
+        Key signingKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
+
+        return Jwts.builder().setSubject(userAuth.getUsername()).setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + 31556952000l))
+                .signWith(SignatureAlgorithm.HS256, signingKey).compact();
+        // Key signingKey = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
+
+        // return Jwts.builder()
+        //         .setSubject((userAuth.getUsername()))
+        //         .setIssuedAt(new Date())
+        //         .setExpiration(new Date((new Date()).getTime() + jwtTokenTime))
+        //         .signWith(SignatureAlgorithm.HS256, signingKey)
+        //         .compact();
     }
+
+    public static void main(String[] args) {
+        final String username = "admin";
+		final String secret = "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4";
+        Key signingKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
+
+        String token = Jwts.builder().setSubject(("admin")).setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + 31556952000l))
+                .signWith(SignatureAlgorithm.HS256, signingKey).compact();
+
+        log.info(token);
+        token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NDU4MTYxMCwiZXhwIjoxNjg2MTM4NTYyfQ.j9HjMcVSZWGzKKS_FLvQSDaq5crGXB1Sp2v_4hY25sA";
+        log.info(token);
+        Claims claims = Jwts.parser().setSigningKey(secret.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(token.trim()).getBody();
+
+        log.info(claims.getSubject());
+    }
+
 }
