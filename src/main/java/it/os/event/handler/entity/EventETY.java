@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -28,10 +29,9 @@ public class EventETY implements Serializable {
 	private static final long serialVersionUID = -3379318079047423133L;
  
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(columnDefinition = "CHAR(255)")
-	private String id;
+    @Column
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer id;
 
 	@Column
 	@NonNull

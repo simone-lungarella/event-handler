@@ -49,7 +49,7 @@ public interface IEventSRV {
      * 
      * @param eventId Event identifier.
      */
-    public void deleteEvent(String eventId);
+    public void deleteEvent(Integer eventId);
 
     /**
      * Returns the event identified by its {@code eventId}.
@@ -57,7 +57,7 @@ public interface IEventSRV {
      * @param eventId Event identifier.
      * @return Event identified by its {@code eventId}.
      */
-    public EventETY findById(String eventId);
+    EventETY findById(Integer eventId);
 
     /**
      * Update an event.

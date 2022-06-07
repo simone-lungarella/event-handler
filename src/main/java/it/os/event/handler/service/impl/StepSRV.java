@@ -21,7 +21,7 @@ public class StepSRV implements IStepSRV {
     private IStepRepo stepRepo;
 
     @Override
-    public List<StepETY> generateDefaultSteps(final String eventId) {
+    public List<StepETY> generateDefaultSteps(final Integer eventId) {
         
         final List<StepETY> defaultSteps = new ArrayList<>();
         for (final StepTypeEnum step : StepTypeEnum.values()) {
@@ -55,7 +55,7 @@ public class StepSRV implements IStepSRV {
     }
 
     @Override
-    public List<StepETY> getAllEventSteps(final String eventId) {
+    public List<StepETY> getAllEventSteps(final Integer eventId) {
         try {
             return stepRepo.getStepsByEventId(eventId);
         } catch (final Exception e) {
@@ -65,7 +65,7 @@ public class StepSRV implements IStepSRV {
     }
 
     @Override
-    public void deleteAllByEventId(String eventId) {
+    public void deleteAllByEventId(Integer eventId) {
         
         try {
             stepRepo.deleteAllByEventId(eventId);
@@ -86,7 +86,7 @@ public class StepSRV implements IStepSRV {
     }
 
     @Override
-    public StepETY findById(String stepId) {
+    public StepETY findById(Integer stepId) {
         try {
             return stepRepo.findById(stepId);
         } catch (Exception e) {

@@ -24,11 +24,11 @@ public class StepETY {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
 
     @Column
     @NonNull
-    private String eventId;
+    private Integer eventId;
     
     @Column
     @NonNull

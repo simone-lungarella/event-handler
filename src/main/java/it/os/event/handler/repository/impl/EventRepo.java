@@ -22,7 +22,7 @@ public class EventRepo implements IEventRepo {
     private EntityManager entityManager;
 
     @Override
-    public String save(EventETY entity) {
+    public Integer save(final EventETY entity) {
 
         try {
             entityManager.persist(entity);
@@ -46,7 +46,7 @@ public class EventRepo implements IEventRepo {
     }
 
     @Override
-    public void deleteById(String eventId) {
+    public void deleteById(final Integer eventId) {
 
         try {
             entityManager.createQuery("DELETE FROM EventETY E WHERE E.id = (:eventId)")
@@ -60,7 +60,7 @@ public class EventRepo implements IEventRepo {
     }
 
     @Override
-    public EventETY findById(String eventId) {
+    public EventETY findById(Integer eventId) {
         try {
             return entityManager.createQuery("SELECT E FROM EventETY E WHERE E.id = (:eventId)", EventETY.class)
                     .setParameter("eventId", eventId)

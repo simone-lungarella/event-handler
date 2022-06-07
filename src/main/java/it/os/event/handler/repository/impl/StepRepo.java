@@ -48,7 +48,7 @@ public class StepRepo implements IStepRepo {
     }
 
     @Override
-    public List<StepETY> getStepsByEventId(final String eventId) {
+    public List<StepETY> getStepsByEventId(final Integer eventId) {
         try {
             return entityManager
                     .createQuery("SELECT S FROM StepETY S WHERE S.eventId = (:eventId)", StepETY.class)
@@ -61,7 +61,7 @@ public class StepRepo implements IStepRepo {
     }
 
     @Override
-    public void deleteAllByEventId(String eventId) {
+    public void deleteAllByEventId(Integer eventId) {
 
         try {
             entityManager.createQuery("DELETE FROM StepETY S WHERE S.eventId = (:eventId)")
@@ -84,7 +84,7 @@ public class StepRepo implements IStepRepo {
     }
 
     @Override
-    public StepETY findById(String stepId) {
+    public StepETY findById(Integer stepId) {
         try {
             return entityManager.find(StepETY.class, stepId);
         } catch (Exception e) {

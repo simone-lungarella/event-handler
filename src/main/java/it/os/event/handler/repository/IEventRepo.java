@@ -17,7 +17,7 @@ public interface IEventRepo {
      * @param event Event to persist.
      * @return Persisted event identifier.
      */
-    String save(EventETY entity);
+    Integer save(EventETY entity);
 
     /**
      * Returns the list of incomplete events ordered by completion percentage.
@@ -31,7 +31,7 @@ public interface IEventRepo {
      * 
      * @param eventId Event identifier.
      */
-    void deleteById(String eventId);
+    void deleteById(Integer eventId);
 
     /**
      * Returns the event identified by its {@code eventId}.
@@ -39,7 +39,7 @@ public interface IEventRepo {
      * @param eventId Event identifier.
      * @return Event identified by its {@code eventId}.
      */
-    EventETY findById(String eventId);
+    EventETY findById(Integer eventId);
 
     /**
      * Update an event.
