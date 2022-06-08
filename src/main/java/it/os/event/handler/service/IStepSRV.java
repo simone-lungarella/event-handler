@@ -12,15 +12,15 @@ public interface IStepSRV {
      * @param eventId Event identifier to assign to each step.
      * @return List of steps generated.
      */
-    List<StepETY> generateDefaultSteps(String eventId);
-
+    List<StepETY> generateDefaultSteps(Integer eventId);
+    
     /**
      * Persist a new step.
      * 
      * @param step New step to persist.
      * @return Persisted step identifier.
      */
-    String saveStep(StepETY step);
+    Integer saveStep(StepETY step); 
 
     /**
      * Persists a list of steps.
@@ -35,14 +35,14 @@ public interface IStepSRV {
      * @param eventId Event identifier.
      * @return Step associated to the event.
      */
-    List<StepETY> getAllEventSteps(String eventId);
+    List<StepETY> getAllEventSteps(Integer eventId);
 
     /**
      * Deletes all steps associated to an event identified by its {@code eventId}.
      * 
      * @param eventId Event identifier.
      */
-    void deleteAllByEventId(String eventId);
+    void deleteAllByEventId(Integer eventId);
 
     /**
      * Update a step.
@@ -58,7 +58,7 @@ public interface IStepSRV {
      * @param stepId Identifier of the step to get.
      * @return Step identified by its {@code stepId}.
      */
-    StepETY findById(String stepId);
+    StepETY findById(Integer stepId);
 
     /**
      * Return all step existing.

@@ -51,7 +51,7 @@ public interface IEventCTL {
                         @ApiResponse(responseCode = "500", description = "Error while deleting event")
         })
         @DeleteMapping("/event")
-        ResponseEntity<Void> deleteEvent(@RequestParam(value = "eventId") String eventId, HttpServletRequest request);
+        ResponseEntity<Void> deleteEvent(@RequestParam(value = "eventId") Integer eventId, HttpServletRequest request);
 
         @Operation(summary = "Returns all events ordered by completion percentage", description = "Returns all events ordered by completion percentage", tags = {
                         "Event" })
@@ -70,7 +70,7 @@ public interface IEventCTL {
                         @ApiResponse(responseCode = "500", description = "Error while retrieving steps")
         })
         @GetMapping("/steps/{eventId}")
-        ResponseEntity<List<StepETY>> getStepsByEventId(@RequestParam(value = "eventId") String eventId, HttpServletRequest request);
+        ResponseEntity<List<StepETY>> getStepsByEventId(@RequestParam(value = "eventId") Integer eventId, HttpServletRequest request);
 
         @Operation(summary = "Set a step in to a complete state", description = "Set a step in to a complete state", tags = {"Step" })
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class)))
@@ -80,7 +80,7 @@ public interface IEventCTL {
                         @ApiResponse(responseCode = "500", description = "Error while updating step")
         })
         @PutMapping("/step/complete")
-        ResponseEntity<String> setStepCompletion(@RequestParam(value = "stepId") String stepId,
+        ResponseEntity<String> setStepCompletion(@RequestParam(value = "stepId") Integer stepId,
                         @RequestParam(value = "isCompleted") Boolean isComplete, HttpServletRequest request);
 
         @Operation(summary = "Returns all steps", description = "Returns all existing sptes", tags = { "Step" })

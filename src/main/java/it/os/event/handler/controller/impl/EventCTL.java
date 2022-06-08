@@ -52,7 +52,7 @@ public class EventCTL implements IEventCTL {
     }
 
     @Override
-    public ResponseEntity<List<StepETY>> getStepsByEventId(final String eventId, final HttpServletRequest request) {
+    public ResponseEntity<List<StepETY>> getStepsByEventId(final Integer eventId, final HttpServletRequest request) {
 
         log.info("Retrieving all steps for event with id: {}", eventId);
         
@@ -61,7 +61,7 @@ public class EventCTL implements IEventCTL {
     }
 
     @Override
-    public ResponseEntity<Void> deleteEvent(String eventId, HttpServletRequest request) {
+    public ResponseEntity<Void> deleteEvent(Integer eventId, HttpServletRequest request) {
        
         log.info("Deleting event with id: {}", eventId);
         
@@ -70,7 +70,7 @@ public class EventCTL implements IEventCTL {
     }
 
     @Override
-    public ResponseEntity<String> setStepCompletion(final String stepId, final Boolean isComplete, HttpServletRequest request) {
+    public ResponseEntity<String> setStepCompletion(final Integer stepId, final Boolean isComplete, HttpServletRequest request) {
         
         final StepETY step = stepSRV.findById(stepId);
         if (step != null) {

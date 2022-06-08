@@ -42,7 +42,7 @@ class EventTest {
 
     @Test
     void persistingTest() {
-        final String eventId = eventRepo.save(new EventETY("Turbine name", "Test description",
+        final Integer eventId = eventRepo.save(new EventETY("Turbine name", "Test description",
                 OperationTypeEnum.GENERATOR_REPLACING.getDescription(),
                 new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), TurbineStateEnum.MARCHING.getName()));
 
