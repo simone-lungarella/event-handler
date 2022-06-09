@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 import org.springframework.util.CollectionUtils;
 
 import it.os.event.handler.entity.EventETY;
@@ -29,6 +30,7 @@ import it.os.event.handler.service.IEventSRV;
 import it.os.event.handler.service.IStepSRV;
 
 @SpringBootTest(properties = { "spring.datasource.url=jdbc:h2:file:./data/event-handler-test-db" })
+@Profile("dev")
 class EventTest {
 
     @Autowired
@@ -42,7 +44,7 @@ class EventTest {
 
     @Test
     void persistingTest() {
-        final String eventId = eventRepo.save(new EventETY("Turbine name", "Test description",
+        final Integer eventId = eventRepo.save(new EventETY("Turbine name", "Test description",
                 OperationTypeEnum.GENERATOR_REPLACING.getDescription(),
                 new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), TurbineStateEnum.MARCHING.getName()));
 

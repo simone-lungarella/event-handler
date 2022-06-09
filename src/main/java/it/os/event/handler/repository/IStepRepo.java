@@ -17,7 +17,7 @@ public interface IStepRepo {
      * @param step Step to persist.
      * @return Persisted step identifier.
      */
-    String save(StepETY step);
+    Integer save(StepETY step);
 
     /**
      * Persists a list of steps.
@@ -32,14 +32,14 @@ public interface IStepRepo {
      * @param stepId Event identifier.
      * @return Step associated to the event.
      */
-    List<StepETY> getStepsByEventId(String eventId);
+    List<StepETY> getStepsByEventId(Integer eventId);
 
     /**
      * Deletes all steps associated to an event identified by its {@code eventId}.
      * 
      * @param eventId Event identifier.
      */
-    void deleteAllByEventId(String eventId);
+    void deleteAllByEventId(Integer eventId);
 
     /**
      * Update a step.
@@ -55,7 +55,7 @@ public interface IStepRepo {
      * @param stepId Identifier of the step to get.
      * @return Step identified by its {@code stepId}.
      */
-    StepETY findById(String stepId);
+    StepETY findById(Integer stepId);
 
     /**
      * Returns all existing steps.

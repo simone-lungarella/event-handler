@@ -6,6 +6,10 @@ public class BusinessException extends RuntimeException {
         super(msg, e);
     }
 
+    public BusinessException(String msg) {
+        super(msg, null);
+    }
+
     public BusinessException(Exception e) {
         super(null, e);
     }

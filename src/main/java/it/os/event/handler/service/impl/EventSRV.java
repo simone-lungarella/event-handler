@@ -71,7 +71,7 @@ public class EventSRV implements IEventSRV {
             event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);
             event.setStartingDateOOCC(startingOOCC != null ? startingOOCC.toString() : null);
             
-            final String eventId = eventRepo.save(event);
+            final Integer eventId = eventRepo.save(event);
 
             final List<StepETY> steps = stepSrv.generateDefaultSteps(eventId);
             stepSrv.saveAllSteps(steps);
@@ -86,7 +86,7 @@ public class EventSRV implements IEventSRV {
     }
 
     @Override
-    public void deleteEvent(final String eventId) {
+    public void deleteEvent(final Integer eventId) {
 
         try {
             eventRepo.deleteById(eventId);
@@ -98,7 +98,7 @@ public class EventSRV implements IEventSRV {
     }
 
     @Override
-    public EventETY findById(final String eventId) {
+    public EventETY findById(final Integer eventId) {
         try {
             return eventRepo.findById(eventId);
         } catch (final Exception e) {
@@ -127,7 +127,7 @@ public class EventSRV implements IEventSRV {
             if (step.isComplete()) {
                 event.setCompletedSteps(event.getCompletedSteps() + 1);
                 
-                if (StepTypeEnum.CHIUSURA_CANTIERE.equals(StepTypeEnum.get(step.getName()))) {
+                if (StepTypeEnum.CME_ODC.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
                 } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateEEMM(LocalDate.now().toString());
@@ -137,7 +137,7 @@ public class EventSRV implements IEventSRV {
             } else {
                 event.setCompletedSteps(event.getCompletedSteps() - 1);
                 
-                if (StepTypeEnum.CHIUSURA_CANTIERE.equals(StepTypeEnum.get(step.getName()))) {
+                if (StepTypeEnum.CME_ODC.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDate(null);
                 } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateEEMM(null);

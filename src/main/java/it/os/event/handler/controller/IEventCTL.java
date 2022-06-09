@@ -33,8 +33,7 @@ import it.os.event.handler.entity.StepETY;
 @CrossOrigin(origins = "${allowed-cross-orgin}")
 public interface IEventCTL {
 
-        @Operation(summary = "Generate a new event and persist it", description = "Generate a new event and persist it", tags = {
-                        "Event" })
+        @Operation(summary = "Generate a new event and persist it", description = "Generate a new event and persist it", tags = { "Event" })
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class)))
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Event saved"),
@@ -43,18 +42,16 @@ public interface IEventCTL {
         @PostMapping("/event")
         ResponseEntity<String> createEvent(@RequestBody(required = true) EventRequest turbineData, HttpServletRequest request);
 
-        @Operation(summary = "Deletes an event identified by its Id", description = "Deletes an event identified by its Id", tags = {
-                        "Event" })
+        @Operation(summary = "Deletes an event identified by its Id", description = "Deletes an event identified by its Id", tags = { "Event" })
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Void.class)))
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Event deleted"),
                         @ApiResponse(responseCode = "500", description = "Error while deleting event")
         })
         @DeleteMapping("/event")
-        ResponseEntity<Void> deleteEvent(@RequestParam(value = "eventId") String eventId, HttpServletRequest request);
+        ResponseEntity<Void> deleteEvent(@RequestParam(value = "eventId") Integer eventId, HttpServletRequest request);
 
-        @Operation(summary = "Returns all events ordered by completion percentage", description = "Returns all events ordered by completion percentage", tags = {
-                        "Event" })
+        @Operation(summary = "Returns all events ordered by completion percentage", description = "Returns all events ordered by completion percentage", tags = { "Event" })
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = List.class)))
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Events retrieved"),
@@ -70,7 +67,7 @@ public interface IEventCTL {
                         @ApiResponse(responseCode = "500", description = "Error while retrieving steps")
         })
         @GetMapping("/steps/{eventId}")
-        ResponseEntity<List<StepETY>> getStepsByEventId(@RequestParam(value = "eventId") String eventId, HttpServletRequest request);
+        ResponseEntity<List<StepETY>> getStepsByEventId(@RequestParam(value = "eventId") Integer eventId, HttpServletRequest request);
 
         @Operation(summary = "Set a step in to a complete state", description = "Set a step in to a complete state", tags = {"Step" })
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class)))
@@ -80,7 +77,7 @@ public interface IEventCTL {
                         @ApiResponse(responseCode = "500", description = "Error while updating step")
         })
         @PutMapping("/step/complete")
-        ResponseEntity<String> setStepCompletion(@RequestParam(value = "stepId") String stepId,
+        ResponseEntity<String> setStepCompletion(@RequestParam(value = "stepId") Integer stepId,
                         @RequestParam(value = "isCompleted") Boolean isComplete, HttpServletRequest request);
 
         @Operation(summary = "Returns all steps", description = "Returns all existing sptes", tags = { "Step" })
