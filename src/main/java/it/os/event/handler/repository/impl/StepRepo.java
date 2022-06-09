@@ -1,5 +1,6 @@
 package it.os.event.handler.repository.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import it.os.event.handler.entity.StepETY;
+import it.os.event.handler.enums.StepTypeEnum;
 import it.os.event.handler.exception.BusinessException;
 import it.os.event.handler.repository.IStepRepo;
 import lombok.extern.slf4j.Slf4j;
@@ -96,12 +98,17 @@ public class StepRepo implements IStepRepo {
     @Override
     public List<StepETY> findAll() {
 
+        List<StepETY> steps = new ArrayList<>();
         try {
-            return entityManager.createQuery("SELECT S FROM StepETY S", StepETY.class).getResultList();
+            steps = entityManager.createQuery("SELECT S FROM StepETY S", StepETY.class).getResultList();
+            if (!CollectionUtils.isEmpty(steps)) {
+                steps.sort((step1, step2) -> step1.getId().compareTo(step2.getId()));
+            }
         } catch (Exception e) {
             log.error("Error while retrieving all steps", e);
             throw new BusinessException("Error while retrieving all steps", e);
         }
+        return steps;
     }
 
     @Override
