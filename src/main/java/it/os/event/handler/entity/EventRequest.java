@@ -16,17 +16,17 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EventRequest {
 
-    String turbineName;
+    private String turbineName;
     
-    String description;
+    private String description;
     
-    String operation;
+    private String operation;
    
-    TurbineStateEnum turbineState;
+    private TurbineStateEnum turbineState;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate startingDateEEMM;
+    private LocalDate startingDateEEMM;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate startingDateOOCC;
+    private LocalDate startingDateOOCC;
 }

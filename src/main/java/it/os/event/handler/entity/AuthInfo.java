@@ -25,9 +25,11 @@ public class AuthInfo {
 
     private List<String> roles;
 
+    private String authorizations;
+
     public void setRoleList(String ...role) {
 
-        if(CollectionUtils.isEmpty(Arrays.asList(role))) {
+        if(!CollectionUtils.isEmpty(Arrays.asList(role))) {
             roles = Arrays.asList(role);
         } else {
             roles = new ArrayList<>();
