@@ -24,16 +24,20 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import it.os.event.handler.entity.AuthInfo;
 import it.os.event.handler.entity.UserETY;
 import it.os.event.handler.repository.IUserRepo;
+import it.os.event.handler.service.IUserAuthSRV;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @CrossOrigin(origins = "${allowed-cross-orgin}")
 @RequestMapping("/")
-public class LoginCTL {
+public class LoginCTL extends AbstractCTL {
 
     @Autowired
     private IUserRepo userRepo;
+
+    @Autowired
+    private IUserAuthSRV userAuthService;
 
     @Value("${jwt-token.duration-time}")
     private Long jwtTokenTime;
@@ -74,6 +78,14 @@ public class LoginCTL {
                 authInfo.setJwtToken(generateJwtToken(authentication));
                 authInfo.setUsername(username);
                 authInfo.setRoleList(user.get().getRole().name());
+                String userAuth = "000000000";
+                try {
+                    userAuth = userAuthService.getUserAuth(username);
+                } catch (Exception e) {
+                    log.error("Error while retrieving user authantications", e);
+                    userAuth = "000000000";
+                }
+                authInfo.setAuthorizations(userAuth);
             }
         }
 

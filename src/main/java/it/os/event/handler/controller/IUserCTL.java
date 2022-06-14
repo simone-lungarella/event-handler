@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,4 +75,22 @@ public interface IUserCTL {
         })
         @DeleteMapping("/user")
         ResponseEntity<String> deleteUser(@RequestParam(value = "username") String username, HttpServletRequest request);
+
+        @Operation(summary = "Retrieve all user permissions", description = "Retrieve permissions of a user", tags = { "User" })
+        @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class)))
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "User authorization retrieved"),
+                        @ApiResponse(responseCode = "500", description = "Error while retrieving user data")
+        })
+        @GetMapping("/user-auth")
+        ResponseEntity<String> getUserAuth(@RequestParam(value = "username") String username, HttpServletRequest request);
+
+        @Operation(summary = "Updates all user permissions", description = "Updates permissions of a user", tags = { "User" })
+        @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Void.class)))
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "User authorization updated"),
+                        @ApiResponse(responseCode = "500", description = "Error while retrieving user data")
+        })
+        @PutMapping("/user-auth")
+        ResponseEntity<Void> updateUserAuth(@RequestParam(value = "username") String username, @RequestParam(value = "auth") String auth, HttpServletRequest request);
 }
