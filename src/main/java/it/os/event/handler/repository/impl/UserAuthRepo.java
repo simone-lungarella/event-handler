@@ -51,7 +51,7 @@ public class UserAuthRepo implements IUserAuthRepo {
                     .setParameter("username", username).getSingleResult();
 
             userAuth.setAuthorizations(auth);
-            entityManager.merge(auth);
+            entityManager.merge(userAuth);
         } catch (NoResultException noRe) {
             log.warn("User auths not found, inserting new ones");
             final UserAuthorizationsETY newUserAuth = new UserAuthorizationsETY();
