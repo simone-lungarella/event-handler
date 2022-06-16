@@ -48,7 +48,6 @@ public interface IUserCTL {
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserDetails.class)))
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "User retrieved"),
-                        @ApiResponse(responseCode = "401", description = "Operation unauthorized"),
                         @ApiResponse(responseCode = "404", description = "User not found"),
                         @ApiResponse(responseCode = "500", description = "Error while retrieving user data")
         })
