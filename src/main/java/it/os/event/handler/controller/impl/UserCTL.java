@@ -40,9 +40,7 @@ public class UserCTL extends AbstractCTL implements IUserCTL {
             final HttpServletRequest request) {
 
         log.info("Creating a user with username: {}", registrationRequest.getUsername());
-        if (!isAdminUser()) {
-            throw new AdminRequiredException(ADMIN_REQUIRED_MSG);
-        }
+        
         registrationService.register(registrationRequest);
         return new ResponseEntity<>("User created", HttpStatus.OK);
     }
