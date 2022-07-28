@@ -1,13 +1,22 @@
 package it.os.event.handler.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,11 +46,23 @@ public class EventETY implements Serializable {
 
 	@Column
 	@NonNull
+	private String turbineNumber;
+
+	@Column
+	@NonNull
 	private String description;
 
 	@Column
 	@NonNull
-	private String operation;
+	private String power;
+
+	@Column
+	@NonNull
+	@ElementCollection(fetch = FetchType.EAGER, targetClass = String.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "id")
+    @Cascade(value={CascadeType.ALL})
+	private List<String> operation;
 
 	@Column
 	@NonNull

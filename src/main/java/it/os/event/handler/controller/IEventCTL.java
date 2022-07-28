@@ -42,6 +42,17 @@ public interface IEventCTL {
         @PostMapping("/event")
         ResponseEntity<String> createEvent(@RequestBody(required = true) EventRequest turbineData, HttpServletRequest request);
 
+        @Operation(summary = "Updates an existing event", description = "Updates an existing event", tags = { "Event" })
+        @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class)))
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Event updated"),
+                        @ApiResponse(responseCode = "404", description = "Event not found"),
+                        @ApiResponse(responseCode = "500", description = "Error while updating event")
+        })
+        @PutMapping("/event")
+        ResponseEntity<String> updateEvent(@RequestBody(required = true) EventRequest turbineData, HttpServletRequest request);
+
+
         @Operation(summary = "Deletes an event identified by its Id", description = "Deletes an event identified by its Id", tags = { "Event" })
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Void.class)))
         @ApiResponses(value = {

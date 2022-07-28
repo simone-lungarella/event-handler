@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -48,9 +49,11 @@ class RetentionSchedulerTest {
     @Test
     void testRun() {
 
+        final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
+
         // Data preparation
-        final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "eventDescription",
-                OperationTypeEnum.GENERATOR_REPLACING.getName(), TurbineStateEnum.LIMITED,
+        final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "XXXX", "eventDescription", "Megawatt",
+                operations, TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
 
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");

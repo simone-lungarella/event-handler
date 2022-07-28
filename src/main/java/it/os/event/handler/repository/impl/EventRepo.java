@@ -49,9 +49,7 @@ public class EventRepo implements IEventRepo {
     public void deleteById(final Integer eventId) {
 
         try {
-            entityManager.createQuery("DELETE FROM EventETY E WHERE E.id = (:eventId)")
-                    .setParameter("eventId", eventId)
-                    .executeUpdate();
+            entityManager.remove(entityManager.find(EventETY.class, eventId));
         } catch (Exception e) {
             log.error("Error encountered while deleting event", e);
             throw new BusinessException("Error encountered while deleting event", e);

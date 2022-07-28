@@ -59,13 +59,13 @@ public class EventSRV implements IEventSRV {
     }
 
     @Override
-    public boolean insertNewEvent(final String turbineName, final String eventDescription,
-        final String operation, final TurbineStateEnum turbineState, final LocalDate startingEEMM, final LocalDate startingOOCC) {
+    public boolean insertNewEvent(final String turbineName, final String turbineNumber, final String eventDescription, final String power,
+        final List<String> operation, final TurbineStateEnum turbineState, final LocalDate startingEEMM, final LocalDate startingOOCC) {
 
         boolean isSuccessful = false;
         try {
 
-            final EventETY event = new EventETY(turbineName, eventDescription, operation,
+            final EventETY event = new EventETY(turbineName, turbineNumber, eventDescription, power, operation,
                     new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), turbineState.getName());
 
             event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);
