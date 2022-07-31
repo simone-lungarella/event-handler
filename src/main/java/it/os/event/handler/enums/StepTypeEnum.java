@@ -6,7 +6,7 @@ public enum StepTypeEnum {
 
     SOPRALLUOGO(1, "Sopralluogo", "Sopralluogo zona cantiere"),
     REDAZIONE_REPORT(2, "Redazione report", "Redazione report precedente ad inizio cantiere"),
-    APERTURA_CANTIERE(3, "Richiesta apertura cantiere", "Invio report a permitting"),
+    PERMITTING(3, "Permitting", "Invio report a permitting"),
     COMPLETAMENTO_OOCC(4, "Fine attività OOCC", "Completamento attività OOCC"),
     COMPLETAMENTO_EEMM(5, "Fine attività EEMM", "Completamento attività EEMM"),
     SMONTAGGIO_PIAZZOLA(6, "Smontaggio piazzola", "Smontaggio piazzola prima del completamento del cantiere");

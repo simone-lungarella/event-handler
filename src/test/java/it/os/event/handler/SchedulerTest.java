@@ -94,10 +94,10 @@ class SchedulerTest {
     @DisplayName("Test notification scheduler")
     void whenEventIsExpired_notificationMustBeSent() {
 
-        final String turbineName = "Test turbine";
+        final String turbineName = "RO01";
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
-        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "XXXX", "Test", 
+        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "1982", "Test", 
             TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now().minusDays(1), LocalDate.now());
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");

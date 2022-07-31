@@ -47,7 +47,7 @@ public class NotificationScheduler {
                     }
                     
                     if (LocalDate.parse(event.getStartingDateEEMM()).isBefore(LocalDate.now().minusDays(days))) {
-                        sendMail(event, days);
+                        sendMail(event);
                     } else {
                         log.info("Event with id: {} not expired yet, checking again at next schedule", event.getId());
                     }
@@ -60,11 +60,13 @@ public class NotificationScheduler {
         log.info("notification scheduler complete");
     }
 
-    private void sendMail(final EventETY event, final int days) {
+    private void sendMail(final EventETY event) {
         if (!event.isMailSent()) {
             log.info("Sending mail for event with id: {}", event.getId());
-            final String subject = "Superamento soglia turbina: " + event.getTurbineName();
-            final String body = "La turbina identificata come: " + event.getTurbineName() + " e di tipologia: " + event.getPower() + " ha superato la soglia di " + days + " giorni";
+            final String subject = String.format("Titolo abilitativo in scadenza per piazzola: %s", event.getTurbineName());
+            final String body = String.format(
+                "Il titolo abilitativo per la piazzola identificata con: I.%s %s e le opere civili accessorie, scadrà fra 20 giorni", 
+                event.getTurbineNumber(), event.getTurbineName());
             final boolean mailSent = mailSRV.sendMail(subject, body);
             
             if (mailSent) {
