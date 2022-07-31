@@ -6,8 +6,6 @@ import it.os.event.handler.entity.EventETY;
 
 /**
  * Interface of event repository.
- * 
- * @author Simone Lungarella
  */
 public interface IEventRepo {
 

@@ -26,8 +26,6 @@ import it.os.event.handler.entity.RegistrationRequest;
 
 /**
  * Interface of user controller.
- * 
- * @author Simone Lungarella
  */
 @RequestMapping("/v1.0.0/registration")
 @CrossOrigin(origins = "${allowed-cross-orgin}")

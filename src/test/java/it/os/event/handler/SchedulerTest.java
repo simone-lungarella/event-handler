@@ -34,8 +34,6 @@ import it.os.event.handler.service.IStepSRV;
 
 /**
  * Test class for retention scheduler.
- * 
- * @author Simone Lungarella
  */
 @SpringBootTest(properties = { 
     "spring.datasource.url=jdbc:postgresql://localHost:5432/event_handler", 

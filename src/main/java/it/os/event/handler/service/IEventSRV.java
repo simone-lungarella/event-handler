@@ -10,8 +10,6 @@ import it.os.event.handler.enums.TurbineStateEnum;
 
 /**
  * Interface service of event handler.
- * 
- * @author Simone Lungarella
  */
 public interface IEventSRV {
 

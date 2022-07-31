@@ -26,8 +26,6 @@ import it.os.event.handler.entity.StepETY;
 
 /**
  * Interface of event controller.
- * 
- * @author Simone Lungarella
  */
 @RequestMapping("/v1.0.0")
 @CrossOrigin(origins = "${allowed-cross-orgin}")

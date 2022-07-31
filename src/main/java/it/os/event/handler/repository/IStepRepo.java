@@ -6,8 +6,6 @@ import it.os.event.handler.entity.StepETY;
 
 /**
  * Interface of step repository.
- * 
- * @author Simone Lungarella
  */
 public interface IStepRepo {
 
