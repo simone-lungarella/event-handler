@@ -14,12 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.ActiveProfiles;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-@SpringBootTest
+@SpringBootTest(properties = { 
+    "spring.datasource.url=jdbc:postgresql://localHost:5432/event_handler", 
+    "spring.datasource.username=postgres",
+    "spring.datasource.password=admin", })
+@ActiveProfiles("test")
 class ApplicationTests {
 
 	@Autowired
@@ -37,7 +42,7 @@ class ApplicationTests {
 	@Test
 	void parsingJwtTest() {
 
-		final String username = "admin";
+		final String username = "Admin";
 		final String secret = "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4";
         Key signingKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
 

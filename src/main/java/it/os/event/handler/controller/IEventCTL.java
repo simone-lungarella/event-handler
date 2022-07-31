@@ -99,4 +99,13 @@ public interface IEventCTL {
         })
         @GetMapping("/steps")
         ResponseEntity<List<StepETY>> getSteps(HttpServletRequest request);
+
+        @Operation(summary = "Extract data about turbines", description = "Returns a csv files with every information on turbines", tags = { "Event" })
+        @ApiResponse(content = @Content(mediaType ="text/csv", schema = @Schema(implementation = byte.class)))
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Extraction complete"),
+                        @ApiResponse(responseCode = "500", description = "Internal server error")
+        })
+        @GetMapping("/events/csv")
+        ResponseEntity<byte[]> getAllEventsAsCsv(HttpServletRequest request);
 }

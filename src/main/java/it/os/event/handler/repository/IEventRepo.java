@@ -60,4 +60,18 @@ public interface IEventRepo {
      */
     void deleteAll();
 
+    /**
+     * Set to {@code true} the flag {@code isMailSent} of the event identified by its {@code eventId}.
+     * 
+     * @param id Identifier of event.
+     */
+    void setMailSent(Integer id);
+
+    /**
+     * Returns all the uncompleted events.
+     * 
+     * @return List of uncompleted events.
+     */
+    List<EventETY> getUncompletedEvents();
+
 }

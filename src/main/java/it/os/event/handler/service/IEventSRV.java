@@ -84,4 +84,25 @@ public interface IEventSRV {
      * Delete all events existing.
      */
     public void deleteAllEvents();
+
+    /**
+     * Construct a csv file with information about all events.
+     * 
+     * @return Resource with the csv file.
+     */
+    public byte[] getTurbinesForExport();
+
+    /**
+     * Set to {@code true} the flag {@code isMailSent} of the event identified by its {@code eventId}.
+     * 
+     * @param id Identifier of event.
+     */
+    public void setMailSent(Integer id);
+
+    /**
+     * Returns all the uncompleted events.
+     * 
+     * @return List of uncompleted events.
+     */
+    public List<EventETY> getUncompletedEvents();
 }

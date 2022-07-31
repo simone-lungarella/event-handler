@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,12 +35,14 @@ public class EventCTL implements IEventCTL {
     private IStepSRV stepSRV;
 
     @Override
-    public ResponseEntity<String> createEvent (final EventRequest requestBody, final HttpServletRequest request) {
+    public ResponseEntity<String> createEvent(final EventRequest requestBody, final HttpServletRequest request) {
 
         log.info("Creation a new event with description: {}", requestBody.getDescription());
-        
-        final boolean isPersisted = eventSRV.insertNewEvent(requestBody.getTurbineName(), requestBody.getTurbineNumber(), requestBody.getDescription(),
-            requestBody.getPower(), requestBody.getOperation(), TurbineStateEnum.get(requestBody.getTurbineState()), requestBody.getStartingDateEEMM(), requestBody.getStartingDateOOCC());
+
+        final boolean isPersisted = eventSRV.insertNewEvent(requestBody.getTurbineName(),
+                requestBody.getTurbineNumber(), requestBody.getDescription(),
+                requestBody.getPower(), requestBody.getOperation(), TurbineStateEnum.get(requestBody.getTurbineState()),
+                requestBody.getStartingDateEEMM(), requestBody.getStartingDateOOCC());
 
         if (isPersisted) {
             return new ResponseEntity<>("Event persisted correctly", HttpStatus.OK);
@@ -48,10 +52,12 @@ public class EventCTL implements IEventCTL {
     }
 
     @Override
-    public ResponseEntity<String> updateEvent (final EventRequest requestBody, final HttpServletRequest request) {
+    public ResponseEntity<String> updateEvent(final EventRequest requestBody, final HttpServletRequest request) {
 
         log.info("Update event with name: {}", requestBody.getTurbineName());
-        final List<EventETY> events = eventSRV.getOrderedEvents().stream().filter(event -> event.getTurbineName().equals(requestBody.getTurbineName())).collect(Collectors.toList());
+        final List<EventETY> events = eventSRV.getOrderedEvents().stream()
+                .filter(event -> event.getTurbineName().equals(requestBody.getTurbineName()))
+                .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(events)) {
             throw new EventNotFoundException("Event with name: " + requestBody.getTurbineName() + " not found");
@@ -64,16 +70,12 @@ public class EventCTL implements IEventCTL {
             event.setPower(requestBody.getPower());
             if (requestBody.getStartingDateEEMM() != null) {
                 event.setStartingDateEEMM(requestBody.getStartingDateEEMM().toString());
-            } else {
-                event.setStartingDateEEMM(null);
             }
             if (requestBody.getStartingDateOOCC() != null) {
                 event.setStartingDateOOCC(requestBody.getStartingDateOOCC().toString());
-            } else {
-                event.setStartingDateOOCC(null);
             }
             eventSRV.update(event);
-            
+
             return new ResponseEntity<>("Event updated correctly", HttpStatus.OK);
         }
     }
@@ -81,7 +83,7 @@ public class EventCTL implements IEventCTL {
     @Override
     public ResponseEntity<List<EventETY>> getAllEvents(final HttpServletRequest request) {
         log.info("Retrieving all events");
-        
+
         final List<EventETY> events = eventSRV.getOrderedEvents();
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
@@ -90,23 +92,24 @@ public class EventCTL implements IEventCTL {
     public ResponseEntity<List<StepETY>> getStepsByEventId(final Integer eventId, final HttpServletRequest request) {
 
         log.info("Retrieving all steps for event with id: {}", eventId);
-        
+
         final List<StepETY> steps = stepSRV.getAllEventSteps(eventId);
         return new ResponseEntity<>(steps, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Void> deleteEvent(Integer eventId, HttpServletRequest request) {
-       
+
         log.info("Deleting event with id: {}", eventId);
-        
+
         eventSRV.deleteEvent(eventId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<String> setStepCompletion(final Integer stepId, final Boolean isComplete, HttpServletRequest request) {
-        
+    public ResponseEntity<String> setStepCompletion(final Integer stepId, final Boolean isComplete,
+            HttpServletRequest request) {
+
         final StepETY step = stepSRV.findById(stepId);
         if (step != null) {
             step.setComplete(isComplete);
@@ -122,9 +125,25 @@ public class EventCTL implements IEventCTL {
     @Override
     public ResponseEntity<List<StepETY>> getSteps(HttpServletRequest request) {
         log.info("Retrieving all steps");
-        
+
         final List<StepETY> steps = stepSRV.getAllSteps();
         return new ResponseEntity<>(steps, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getAllEventsAsCsv(HttpServletRequest request) {
+
+        final byte[] csvFile = eventSRV.getTurbinesForExport();
+
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.parseMediaType("text/csv"));
+        httpHeaders.set( HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=data.csv" );
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .headers(httpHeaders)
+                .body(csvFile);
     }
 
 }

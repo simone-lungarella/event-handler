@@ -15,23 +15,29 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.CollectionUtils;
 
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.OperationTypeEnum;
 import it.os.event.handler.enums.StepTypeEnum;
+import it.os.event.handler.enums.TurbinePower;
 import it.os.event.handler.enums.TurbineStateEnum;
 import it.os.event.handler.repository.IEventRepo;
 import it.os.event.handler.service.IEventSRV;
 import it.os.event.handler.service.IStepSRV;
 
-@SpringBootTest(properties = { "spring.datasource.url=jdbc:h2:file:./data/event-handler-test-db" })
-@Profile("dev")
+@SpringBootTest(properties = { 
+    "spring.datasource.url=jdbc:postgresql://localHost:5432/event_handler", 
+    "spring.datasource.username=postgres",
+    "spring.datasource.password=admin", })
+@ActiveProfiles("test")
 class EventTest {
 
     @Autowired
@@ -43,11 +49,18 @@ class EventTest {
     @Autowired
     IStepSRV stepSRV;
 
+    @BeforeEach
+    void setup() {
+        eventRepo.deleteAll();
+        stepSRV.deleteAllSteps();
+    }
+
     @Test
-    void persistingTest() {
+    @DisplayName("Test event creation")
+    void whenEventIsInserted_shouldBePersisted() {
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
         final Integer eventId = eventRepo.save(new EventETY("Turbine name", "XXXX", "Test description",
-                "Megawatt", operations, new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), TurbineStateEnum.MARCHING.getName()));
+                TurbinePower.MEGAWATT.getName(), operations, new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), TurbineStateEnum.MARCHING.getName()));
 
         assertNotNull(eventId, "The event id should not be null");
 
@@ -55,19 +68,20 @@ class EventTest {
         assertTrue(list.stream().map(EventETY::getId).collect(Collectors.toList()).contains(eventId),
                 "The event inserted should be present in the database");
 
-        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", "Megawatt",
+        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", TurbinePower.MEGAWATT.getName(),
                 operations, TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
         assertTrue(isPersisted, "The event should have been persisted");
     }
 
     @Test
-    void deletionTest() {
+    @DisplayName("Test event deletion")
+    void whenEventsAreDeleted_shouldBeRemovedFromDb() {
 
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
         // Data preparation
-        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", "Megawatt",
+        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", TurbinePower.MEGAWATT.getName(),
                 operations, TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
 
@@ -80,14 +94,12 @@ class EventTest {
     }
 
     @Test
-    void queryTest() {
-
-        stepSRV.deleteAllSteps();
-        eventSrv.deleteAllEvents();
+    @DisplayName("Test step creation")
+    void whenEventIsCreated_stepsShouldBeInserted() {
 
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
-        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", "Megawatt",
+        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", TurbinePower.MEGAWATT.getName(),
                 operations, TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
 
@@ -104,14 +116,12 @@ class EventTest {
     }
 
     @Test
-    void updateStepTest() {
-
-        stepSRV.deleteAllSteps();
-        eventSrv.deleteAllEvents();
+    @DisplayName("Test step update")
+    void whenStepIsUpdated_databaseShouldBeFullyUpdated() {
 
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
-        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", "Megawatt",
+        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", TurbinePower.MEGAWATT.getName(),
                 operations, TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
 

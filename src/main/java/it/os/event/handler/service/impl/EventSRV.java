@@ -1,5 +1,7 @@
 package it.os.event.handler.service.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,6 +12,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import com.opencsv.CSVWriter;
+import com.opencsv.ICSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
@@ -59,8 +66,10 @@ public class EventSRV implements IEventSRV {
     }
 
     @Override
-    public boolean insertNewEvent(final String turbineName, final String turbineNumber, final String eventDescription, final String power,
-        final List<String> operation, final TurbineStateEnum turbineState, final LocalDate startingEEMM, final LocalDate startingOOCC) {
+    public boolean insertNewEvent(final String turbineName, final String turbineNumber, final String eventDescription,
+            final String power,
+            final List<String> operation, final TurbineStateEnum turbineState, final LocalDate startingEEMM,
+            final LocalDate startingOOCC) {
 
         boolean isSuccessful = false;
         try {
@@ -70,7 +79,7 @@ public class EventSRV implements IEventSRV {
 
             event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);
             event.setStartingDateOOCC(startingOOCC != null ? startingOOCC.toString() : null);
-            
+
             final Integer eventId = eventRepo.save(event);
 
             final List<StepETY> steps = stepSrv.generateDefaultSteps(eventId);
@@ -123,11 +132,11 @@ public class EventSRV implements IEventSRV {
     public void updateEventStep(final StepETY step) {
         try {
             final EventETY event = findById(step.getEventId());
-            
+
             if (step.isComplete()) {
                 event.setCompletedSteps(event.getCompletedSteps() + 1);
-                
-                if (StepTypeEnum.CME_ODC.equals(StepTypeEnum.get(step.getName()))) {
+
+                if (StepTypeEnum.SMONTAGGIO_PIAZZOLA.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
                 } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateEEMM(LocalDate.now().toString());
@@ -136,8 +145,8 @@ public class EventSRV implements IEventSRV {
                 }
             } else {
                 event.setCompletedSteps(event.getCompletedSteps() - 1);
-                
-                if (StepTypeEnum.CME_ODC.equals(StepTypeEnum.get(step.getName()))) {
+
+                if (StepTypeEnum.SMONTAGGIO_PIAZZOLA.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDate(null);
                 } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateEEMM(null);
@@ -178,7 +187,7 @@ public class EventSRV implements IEventSRV {
 
     @Override
     public List<EventETY> getEvents(final StepTypeEnum reachedStep) {
-        
+
         final List<EventETY> stepReachedEvent = new ArrayList<>();
         try {
             final List<EventETY> events = getOrderedEvents();
@@ -196,4 +205,70 @@ public class EventSRV implements IEventSRV {
 
         return stepReachedEvent;
     }
+
+    @Override
+    public byte[] getTurbinesForExport() {
+
+        final List<EventETY> events = getOrderedEvents();
+        return writeToCsv(events);
+    }
+
+    public byte[] writeToCsv(List<EventETY> turbines) {
+        
+        try (
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
+            CSVWriter writer = new CSVWriter(streamWriter);) {
+            
+            StringBuilder header = new StringBuilder("")
+                .append("Nome turbina, ")
+                .append("Numero turbina, ")
+                .append("Descrizione, ")
+                .append("Data creazione, ")
+                .append("Stato turbina, ")
+                .append("Tipologia turbina, ")
+                .append("Operazioni, ")
+                .append("Inizio EEMM, ")
+                .append("Inizio OOCC, ")
+                .append("Fine EEMM, ")
+                .append("Fine OOCC\n");
+
+            streamWriter.write(header.toString());
+            streamWriter.flush();
+            StatefulBeanToCsv<EventETY> beanToCsv = new StatefulBeanToCsvBuilder<EventETY>(writer)
+                    .withQuotechar(ICSVWriter.NO_QUOTE_CHARACTER)
+                    .withSeparator(ICSVWriter.DEFAULT_SEPARATOR)
+                    .withOrderedResults(true)
+                    .build();
+
+            beanToCsv.write(turbines);
+            streamWriter.flush();
+
+            return stream.toByteArray();
+		} catch(Exception ex) {
+			log.error("Error while exporting data as CSV file", ex);
+			throw new BusinessException("Error while exporting data as CSV file", ex);
+		}
+	}
+
+    @Override
+    public void setMailSent(final Integer id) {
+        try {
+            eventRepo.setMailSent(id);
+        } catch (Exception e) {
+            log.error("Error while setting mail sent", e);
+            throw new BusinessException("Error while setting mail sent", e);
+        }
+    }
+
+    @Override
+    public List<EventETY> getUncompletedEvents() {
+        try {
+            return eventRepo.getUncompletedEvents();
+        } catch (Exception e) {
+            log.error("Error while getting uncompleted events", e);
+            throw new BusinessException("Error while getting uncompleted events", e);
+        }
+    }
+
 }
