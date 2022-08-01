@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import it.os.event.handler.entity.StepETY;
-import it.os.event.handler.enums.StepTypeEnum;
 import it.os.event.handler.exception.BusinessException;
 import it.os.event.handler.repository.IStepRepo;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 @Transactional
 public class StepRepo implements IStepRepo {
+
+    private static final String SELECT_STEPS_QUERY = "SELECT S FROM StepETY S";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -66,9 +67,14 @@ public class StepRepo implements IStepRepo {
     public void deleteAllByEventId(Integer eventId) {
 
         try {
-            entityManager.createQuery("DELETE FROM StepETY S WHERE S.eventId = (:eventId)")
-                    .setParameter("eventId", eventId)
-                    .executeUpdate();
+            final List<StepETY> steps = entityManager
+                .createQuery(SELECT_STEPS_QUERY + " WHERE S.eventId = (:eventId)", StepETY.class)
+                .setParameter("eventId", eventId)
+                .getResultList();
+
+            if (!CollectionUtils.isEmpty(steps)) {
+                steps.forEach(step -> entityManager.remove(step));
+            }
         } catch (final Exception e) {
             log.error(String.format("Error while deleting all steps associated to the event with id: %s", eventId), e);
             throw new BusinessException(String.format("Error while deleting all steps associated to the event with id: %s", eventId), e);
@@ -100,7 +106,7 @@ public class StepRepo implements IStepRepo {
 
         List<StepETY> steps = new ArrayList<>();
         try {
-            steps = entityManager.createQuery("SELECT S FROM StepETY S", StepETY.class).getResultList();
+            steps = entityManager.createQuery(SELECT_STEPS_QUERY, StepETY.class).getResultList();
             if (!CollectionUtils.isEmpty(steps)) {
                 steps.sort((step1, step2) -> step1.getId().compareTo(step2.getId()));
             }
@@ -115,7 +121,10 @@ public class StepRepo implements IStepRepo {
     public void deleteAll() {
         
         try {
-            entityManager.createQuery("DELETE FROM StepETY S").executeUpdate();
+            final List<StepETY> steps = entityManager.createQuery(SELECT_STEPS_QUERY, StepETY.class).getResultList();
+            if (!CollectionUtils.isEmpty(steps)) {
+                steps.forEach(step -> entityManager.remove(step));
+            }
         } catch (Exception e) {
             log.error("Error while deleting all steps", e);
             throw new BusinessException("Error while deleting all steps", e);

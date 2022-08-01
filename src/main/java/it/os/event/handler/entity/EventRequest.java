@@ -1,10 +1,10 @@
 package it.os.event.handler.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import it.os.event.handler.enums.TurbineStateEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,12 +17,16 @@ import lombok.Setter;
 public class EventRequest {
 
     private String turbineName;
+
+    private String turbineNumber;
     
     private String description;
+
+    private String power;
     
-    private String operation;
+    private List<String> operation;
    
-    private TurbineStateEnum turbineState;
+    private String turbineState;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startingDateEEMM;

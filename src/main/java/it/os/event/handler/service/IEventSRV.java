@@ -10,8 +10,6 @@ import it.os.event.handler.enums.TurbineStateEnum;
 
 /**
  * Interface service of event handler.
- * 
- * @author Simone Lungarella
  */
 public interface IEventSRV {
 
@@ -41,7 +39,7 @@ public interface IEventSRV {
      * @param startingOOCC Starting OOCC.
      * @return {@code true} if the event is inserted correctly, {@code false} otherwise.
      */
-    public boolean insertNewEvent(String turbineName, String eventDescription, String operation, 
+    public boolean insertNewEvent(String turbineName, String turbineNumber, String eventDescription, String power, List<String> operation, 
         TurbineStateEnum turbineState, LocalDate startingEEMM, LocalDate startingOOCC);
 
     /**
@@ -84,4 +82,25 @@ public interface IEventSRV {
      * Delete all events existing.
      */
     public void deleteAllEvents();
+
+    /**
+     * Construct a csv file with information about all events.
+     * 
+     * @return Resource with the csv file.
+     */
+    public byte[] getTurbinesForExport();
+
+    /**
+     * Set to {@code true} the flag {@code isMailSent} of the event identified by its {@code eventId}.
+     * 
+     * @param id Identifier of event.
+     */
+    public void setMailSent(Integer id);
+
+    /**
+     * Returns all the uncompleted events.
+     * 
+     * @return List of uncompleted events.
+     */
+    public List<EventETY> getUncompletedEvents();
 }

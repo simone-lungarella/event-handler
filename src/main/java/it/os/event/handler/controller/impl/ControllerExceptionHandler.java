@@ -9,6 +9,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import it.os.event.handler.exception.AdminRequiredException;
 import it.os.event.handler.exception.BusinessException;
+import it.os.event.handler.exception.EventNotFoundException;
 import it.os.event.handler.exception.StepNotFoundException;
 import it.os.event.handler.exception.UsernameAlreadyTakenException;
 
@@ -16,9 +17,16 @@ import it.os.event.handler.exception.UsernameAlreadyTakenException;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler({ StepNotFoundException.class })
-    public ResponseEntity<String> handleException(final RuntimeException ex, final WebRequest request) {
+    public ResponseEntity<String> handleException(final StepNotFoundException ex, final WebRequest request) {
 
-        String bodyOfResponse = "Entity not found";
+        String bodyOfResponse = "Step not found";
+        return new ResponseEntity<>(bodyOfResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({ EventNotFoundException.class })
+    public ResponseEntity<String> handleException(final EventNotFoundException ex, final WebRequest request) {
+
+        String bodyOfResponse = "Event not found";
         return new ResponseEntity<>(bodyOfResponse, HttpStatus.NOT_FOUND);
     }
 

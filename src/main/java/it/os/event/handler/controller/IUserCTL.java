@@ -26,8 +26,6 @@ import it.os.event.handler.entity.RegistrationRequest;
 
 /**
  * Interface of user controller.
- * 
- * @author Simone Lungarella
  */
 @RequestMapping("/v1.0.0/registration")
 @CrossOrigin(origins = "${allowed-cross-orgin}")
@@ -37,7 +35,6 @@ public interface IUserCTL {
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class)))
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "User registered"),
-                        @ApiResponse(responseCode = "401", description = "Operation unauthorized"),
                         @ApiResponse(responseCode = "409", description = "User already registered"),
                         @ApiResponse(responseCode = "500", description = "Error while registrating new user")
         })

@@ -26,8 +26,6 @@ import it.os.event.handler.entity.StepETY;
 
 /**
  * Interface of event controller.
- * 
- * @author Simone Lungarella
  */
 @RequestMapping("/v1.0.0")
 @CrossOrigin(origins = "${allowed-cross-orgin}")
@@ -41,6 +39,17 @@ public interface IEventCTL {
         })
         @PostMapping("/event")
         ResponseEntity<String> createEvent(@RequestBody(required = true) EventRequest turbineData, HttpServletRequest request);
+
+        @Operation(summary = "Updates an existing event", description = "Updates an existing event", tags = { "Event" })
+        @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class)))
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Event updated"),
+                        @ApiResponse(responseCode = "404", description = "Event not found"),
+                        @ApiResponse(responseCode = "500", description = "Error while updating event")
+        })
+        @PutMapping("/event")
+        ResponseEntity<String> updateEvent(@RequestBody(required = true) EventRequest turbineData, HttpServletRequest request);
+
 
         @Operation(summary = "Deletes an event identified by its Id", description = "Deletes an event identified by its Id", tags = { "Event" })
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Void.class)))
@@ -88,4 +97,13 @@ public interface IEventCTL {
         })
         @GetMapping("/steps")
         ResponseEntity<List<StepETY>> getSteps(HttpServletRequest request);
+
+        @Operation(summary = "Extract data about turbines", description = "Returns a csv files with every information on turbines", tags = { "Event" })
+        @ApiResponse(content = @Content(mediaType ="text/csv", schema = @Schema(implementation = byte.class)))
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Extraction complete"),
+                        @ApiResponse(responseCode = "500", description = "Internal server error")
+        })
+        @GetMapping("/events/csv")
+        ResponseEntity<byte[]> getAllEventsAsCsv(HttpServletRequest request);
 }

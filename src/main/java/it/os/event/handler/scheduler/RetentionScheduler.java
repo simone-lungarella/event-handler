@@ -17,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Scheduler that execute retention of events.
- * 
- * @author Simone Lungarella
  */
 @Slf4j
 @Component
