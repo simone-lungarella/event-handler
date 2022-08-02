@@ -32,6 +32,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class EventSRV implements IEventSRV {
 
+    /**
+     * Separator for CSV file - EU standard.
+     */
+    private static final char CSV_SEPARATOR = ';';
+
     @Autowired
     private IEventRepo eventRepo;
 
@@ -241,7 +246,7 @@ public class EventSRV implements IEventSRV {
             streamWriter.flush();
             StatefulBeanToCsv<EventETY> beanToCsv = new StatefulBeanToCsvBuilder<EventETY>(writer)
                     .withQuotechar(ICSVWriter.NO_QUOTE_CHARACTER)
-                    .withSeparator(ICSVWriter.DEFAULT_SEPARATOR)
+                    .withSeparator(CSV_SEPARATOR)
                     .withOrderedResults(true)
                     .build();
 
