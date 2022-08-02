@@ -40,9 +40,9 @@ public class EventCTL implements IEventCTL {
         log.info("Creation a new event with description: {}", requestBody.getDescription());
 
         final boolean isPersisted = eventSRV.insertNewEvent(requestBody.getTurbineName(),
-                requestBody.getTurbineNumber(), requestBody.getDescription(),
-                requestBody.getPower(), requestBody.getOperation(), TurbineStateEnum.get(requestBody.getTurbineState()),
-                requestBody.getStartingDateEEMM(), requestBody.getStartingDateOOCC());
+                requestBody.getTurbineNumber(), requestBody.getDescription(), requestBody.getPower(), 
+                requestBody.getOperation(), TurbineStateEnum.get(requestBody.getTurbineState()),
+                requestBody.getStartingDateEEMM(), requestBody.getStartingDateOOCC(), requestBody.getOdlNumber());
 
         if (isPersisted) {
             return new ResponseEntity<>("Event persisted correctly", HttpStatus.OK);

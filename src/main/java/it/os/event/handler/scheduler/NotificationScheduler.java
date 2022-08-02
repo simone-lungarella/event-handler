@@ -46,7 +46,7 @@ public class NotificationScheduler {
                         days = schedulerCFG.getMegaWThreshold();
                     }
                     
-                    if (event.getStartingDateEEMM() != null && LocalDate.parse(event.getStartingDateEEMM()).isBefore(LocalDate.now().minusDays(days))) {
+                    if (event.getPermittingDate() != null && !LocalDate.parse(event.getPermittingDate()).isAfter(LocalDate.now().minusDays(days))) {
                         sendMail(event);
                     } else {
                         log.info("Event with id: {} not expired yet, checking again at next schedule", event.getId());

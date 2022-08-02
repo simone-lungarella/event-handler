@@ -19,6 +19,8 @@ public class EventRequest {
     private String turbineName;
 
     private String turbineNumber;
+
+    private String odlNumber;
     
     private String description;
 

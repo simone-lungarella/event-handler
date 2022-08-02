@@ -21,10 +21,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.CollectionUtils;
 
+import com.mysql.cj.protocol.Protocol.ProtocolEventListener.EventType;
+
 import it.os.event.handler.config.SchedulerCFG;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.OperationTypeEnum;
+import it.os.event.handler.enums.StepTypeEnum;
 import it.os.event.handler.enums.TurbinePower;
 import it.os.event.handler.enums.TurbineStateEnum;
 import it.os.event.handler.scheduler.NotificationScheduler;
@@ -67,8 +70,7 @@ class SchedulerTest {
 
         // Data preparation
         final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "XXXX", "eventDescription", TurbinePower.MEGAWATT.getName(),
-                operations, TurbineStateEnum.LIMITED,
-                LocalDate.now(), LocalDate.now());
+                operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now(), "1");
 
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
@@ -97,8 +99,8 @@ class SchedulerTest {
         final String turbineName = "RO01";
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
-        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "1982", "Test", 
-            TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now().minusDays(1), LocalDate.now());
+        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "1982", "Test", TurbinePower.MEGAWATT.getName(), 
+            operations, TurbineStateEnum.LIMITED, LocalDate.now().minusDays(1), LocalDate.now(), "1");
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
@@ -106,13 +108,20 @@ class SchedulerTest {
         EventETY expiredEvent = events.stream().filter(event -> event.getTurbineName().equals(turbineName)).collect(Collectors.toList()).get(0);
         assumeFalse(expiredEvent.isMailSent(), "Mail should not have been sent yet");
 
+        // Updating permitting date
+        final List<StepETY> steps = stepSRV.getAllEventSteps(expiredEvent.getId());
+        for (int i=1; i<=StepTypeEnum.PERMITTING.getOrder(); i++) {
+            steps.get(i).setComplete(true);
+            stepSRV.update(steps.get(i));
+            eventSRV.updateEventStep(steps.get(i));
+        }
+        
         given(schedulerCFG.getMegaWThreshold()).willReturn(0);
         assertDoesNotThrow(() -> notificationScheduler.run());
 
         events = eventSRV.getOrderedEvents();
         expiredEvent = events.stream().filter(event -> event.getTurbineName().equals(turbineName)).collect(Collectors.toList()).get(0);
         assertTrue(expiredEvent.isMailSent(), "Mail should have been sent");
-
     }
 
     @Test
@@ -123,7 +132,7 @@ class SchedulerTest {
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
         final boolean isInserted = eventSRV.insertNewEvent(turbineName, "XXXX", "Test", 
-            TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
+            TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now(), "1");
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 

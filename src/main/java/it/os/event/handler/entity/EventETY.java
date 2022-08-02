@@ -57,14 +57,20 @@ public class EventETY implements Serializable {
 
 	@Column
 	@NonNull
-	@CsvBindByName(column = "Descrizione")
+	@CsvBindByName(column = "Numero ODL")
     @CsvBindByPosition(position = 2)
+	private String odlNumber;
+
+	@Column
+	@NonNull
+	@CsvBindByName(column = "Descrizione")
+    @CsvBindByPosition(position = 3)
 	private String description;
 
 	@Column
 	@NonNull
 	@CsvBindByName(column = "Tipologia turbina")
-    @CsvBindByPosition(position = 5)
+    @CsvBindByPosition(position = 6)
 	private String power;
 
 	@Column
@@ -74,19 +80,19 @@ public class EventETY implements Serializable {
 	@JoinColumn(name = "id")
     @Cascade(value={CascadeType.ALL})
 	@CsvBindByName(column = "Operazioni")
-	@CsvBindByPosition(position = 6)
+	@CsvBindByPosition(position = 7)
 	private List<String> operation;
 
 	@Column
 	@NonNull
 	@CsvBindByName(column = "Data creazione")
-    @CsvBindByPosition(position = 3)
+    @CsvBindByPosition(position = 4)
 	private String creationDate;
 
 	@Column
 	@NonNull
 	@CsvBindByName(column = "Stato turbina")
-    @CsvBindByPosition(position = 4)
+    @CsvBindByPosition(position = 5)
 	private String turbineState;
 
 	@Column
@@ -94,26 +100,31 @@ public class EventETY implements Serializable {
 
 	@Column
 	@CsvBindByName(column = "Inizio EEMM")
-    @CsvBindByPosition(position = 7)
+    @CsvBindByPosition(position = 8)
 	private String startingDateEEMM;
 
 	@Column
 	@CsvBindByName(column = "Inizio OOCC")
-    @CsvBindByPosition(position = 8)
+    @CsvBindByPosition(position = 9)
 	private String startingDateOOCC;
 
 	@Column
+	@CsvBindByName(column = "Smontaggio piazzola")
+    @CsvBindByPosition(position = 12)
 	private String completionDate;
 
 	@Column
 	@CsvBindByName(column = "Fine EEMM")
-    @CsvBindByPosition(position = 9)
+    @CsvBindByPosition(position = 10)
 	private String completionDateEEMM;
 
 	@Column
 	@CsvBindByName(column = "Fine OOCC")
-    @CsvBindByPosition(position = 10)
+    @CsvBindByPosition(position = 11)
 	private String completionDateOOCC;
+
+	@Column
+	private String permittingDate;
 
 	@Column
 	private boolean mailSent;

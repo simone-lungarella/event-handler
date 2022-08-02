@@ -67,14 +67,13 @@ public class EventSRV implements IEventSRV {
 
     @Override
     public boolean insertNewEvent(final String turbineName, final String turbineNumber, final String eventDescription,
-            final String power,
-            final List<String> operation, final TurbineStateEnum turbineState, final LocalDate startingEEMM,
-            final LocalDate startingOOCC) {
+            final String power, final List<String> operation, final TurbineStateEnum turbineState, 
+            final LocalDate startingEEMM, final LocalDate startingOOCC, final String odlNumber) {
 
         boolean isSuccessful = false;
         try {
 
-            final EventETY event = new EventETY(turbineName, turbineNumber, eventDescription, power, operation,
+            final EventETY event = new EventETY(turbineName, turbineNumber, odlNumber, eventDescription, power, operation,
                     new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), turbineState.getName());
 
             event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);
@@ -142,6 +141,8 @@ public class EventSRV implements IEventSRV {
                     event.setCompletionDateEEMM(LocalDate.now().toString());
                 } else if (StepTypeEnum.COMPLETAMENTO_OOCC.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateOOCC(LocalDate.now().toString());
+                } else if (StepTypeEnum.PERMITTING.equals(StepTypeEnum.get(step.getName()))) {
+                    event.setPermittingDate(LocalDate.now().toString());
                 }
             } else {
                 event.setCompletedSteps(event.getCompletedSteps() - 1);
@@ -152,10 +153,11 @@ public class EventSRV implements IEventSRV {
                     event.setCompletionDateEEMM(null);
                 } else if (StepTypeEnum.COMPLETAMENTO_OOCC.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateOOCC(null);
+                } else if (StepTypeEnum.PERMITTING.equals(StepTypeEnum.get(step.getName()))) {
+                    event.setPermittingDate(null);
                 }
             }
             update(event);
-
         } catch (final Exception e) {
             log.error("Error encountered while updating an event step.", e);
             throw new BusinessException("Error encountered while updating an event step.", e);
@@ -223,6 +225,7 @@ public class EventSRV implements IEventSRV {
             StringBuilder header = new StringBuilder("")
                 .append("Nome turbina, ")
                 .append("Numero turbina, ")
+                .append("Numero ODL, ")
                 .append("Descrizione, ")
                 .append("Data creazione, ")
                 .append("Stato turbina, ")
@@ -231,7 +234,8 @@ public class EventSRV implements IEventSRV {
                 .append("Inizio EEMM, ")
                 .append("Inizio OOCC, ")
                 .append("Fine EEMM, ")
-                .append("Fine OOCC\n");
+                .append("Fine OOCC, ")
+                .append("Smontaggio piazzola\n");
 
             streamWriter.write(header.toString());
             streamWriter.flush();
