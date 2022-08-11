@@ -20,11 +20,9 @@ public class EventRequest {
 
     private String turbineNumber;
 
-    private String odlNumber;
+    private Integer odlNumber;
     
     private String description;
-
-    private Integer odlNumber;
 
     private String power;
     

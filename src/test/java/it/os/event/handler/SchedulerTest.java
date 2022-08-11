@@ -21,8 +21,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.CollectionUtils;
 
-import com.mysql.cj.protocol.Protocol.ProtocolEventListener.EventType;
-
 import it.os.event.handler.config.SchedulerCFG;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
