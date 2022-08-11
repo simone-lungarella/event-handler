@@ -72,13 +72,13 @@ public class EventSRV implements IEventSRV {
 
     @Override
     public boolean insertNewEvent(final String turbineName, final String turbineNumber, final String eventDescription,
-            final String power, final List<String> operation, final TurbineStateEnum turbineState, 
-            final LocalDate startingEEMM, final LocalDate startingOOCC, final String odlNumber) {
+            final Integer odlNumber, final String power, final List<String> operation, 
+            final TurbineStateEnum turbineState, final LocalDate startingEEMM, final LocalDate startingOOCC) {
 
         boolean isSuccessful = false;
         try {
 
-            final EventETY event = new EventETY(turbineName, turbineNumber, odlNumber, eventDescription, power, operation,
+            final EventETY event = new EventETY(turbineName, turbineNumber, eventDescription, odlNumber, power, operation,
                     new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), turbineState.getName());
 
             event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);
@@ -232,6 +232,7 @@ public class EventSRV implements IEventSRV {
                 .append("Numero turbina, ")
                 .append("Numero ODL, ")
                 .append("Descrizione, ")
+                .append("Numero ODL, ")
                 .append("Data creazione, ")
                 .append("Stato turbina, ")
                 .append("Tipologia turbina, ")

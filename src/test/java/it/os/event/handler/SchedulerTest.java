@@ -69,8 +69,8 @@ class SchedulerTest {
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
         // Data preparation
-        final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "XXXX", "eventDescription", TurbinePower.MEGAWATT.getName(),
-                operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now(), "1");
+        final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
+                operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
 
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
@@ -99,8 +99,8 @@ class SchedulerTest {
         final String turbineName = "RO01";
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
-        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "1982", "Test", TurbinePower.MEGAWATT.getName(), 
-            operations, TurbineStateEnum.LIMITED, LocalDate.now().minusDays(1), LocalDate.now(), "1");
+        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "1982", "Test", 1, 
+            TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now().minusDays(1), LocalDate.now());
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
@@ -131,8 +131,8 @@ class SchedulerTest {
         final String turbineName = "Test turbine";
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
-        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "XXXX", "Test", 
-            TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now(), "1");
+        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "XXXX", "Test", 1, 
+            TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
