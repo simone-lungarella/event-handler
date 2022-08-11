@@ -78,9 +78,10 @@ public class EventSRV implements IEventSRV {
         boolean isSuccessful = false;
         try {
 
-            final EventETY event = new EventETY(turbineName, turbineNumber, eventDescription, odlNumber, power, operation,
+            final EventETY event = new EventETY(turbineName, turbineNumber, eventDescription, power, operation,
                     new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), turbineState.getName());
 
+            event.setOdlNumber(odlNumber);
             event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);
             event.setStartingDateOOCC(startingOOCC != null ? startingOOCC.toString() : null);
 

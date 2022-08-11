@@ -59,7 +59,7 @@ class EventTest {
     @DisplayName("Test event creation")
     void whenEventIsInserted_shouldBePersisted() {
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
-        final Integer eventId = eventRepo.save(new EventETY("Turbine name", "XXXX", "Test description", 1,
+        final Integer eventId = eventRepo.save(new EventETY("Turbine name", "XXXX", "Test description",
                 TurbinePower.MEGAWATT.getName(), operations, new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), TurbineStateEnum.MARCHING.getName()));
 
         assertNotNull(eventId, "The event id should not be null");

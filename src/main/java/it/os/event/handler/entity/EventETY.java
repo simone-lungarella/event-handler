@@ -62,7 +62,6 @@ public class EventETY implements Serializable {
 	private String description;
 
 	@Column
-	@NonNull
 	@CsvBindByName(column = "Numero ODL")
     @CsvBindByPosition(position = 3)
 	private Integer odlNumber;
