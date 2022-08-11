@@ -39,7 +39,7 @@ public interface IEventSRV {
      * @param startingOOCC Starting OOCC.
      * @return {@code true} if the event is inserted correctly, {@code false} otherwise.
      */
-    public boolean insertNewEvent(String turbineName, String turbineNumber, String eventDescription, String power, List<String> operation, 
+    public boolean insertNewEvent(String turbineName, String turbineNumber, String eventDescription, Integer odlNumber, String power, List<String> operation, 
         TurbineStateEnum turbineState, LocalDate startingEEMM, LocalDate startingOOCC);
 
     /**

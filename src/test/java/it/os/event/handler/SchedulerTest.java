@@ -66,7 +66,7 @@ class SchedulerTest {
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
         // Data preparation
-        final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "XXXX", "eventDescription", TurbinePower.MEGAWATT.getName(),
+        final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
                 operations, TurbineStateEnum.LIMITED,
                 LocalDate.now(), LocalDate.now());
 
@@ -97,7 +97,7 @@ class SchedulerTest {
         final String turbineName = "RO01";
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
-        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "1982", "Test", 
+        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "1982", "Test", 1, 
             TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now().minusDays(1), LocalDate.now());
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
@@ -122,7 +122,7 @@ class SchedulerTest {
         final String turbineName = "Test turbine";
         final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
 
-        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "XXXX", "Test", 
+        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "XXXX", "Test", 1, 
             TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");

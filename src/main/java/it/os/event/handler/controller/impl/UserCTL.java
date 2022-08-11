@@ -42,6 +42,10 @@ public class UserCTL extends AbstractCTL implements IUserCTL {
         log.info("Creating a user with username: {}", registrationRequest.getUsername());
         
         registrationService.register(registrationRequest);
+
+        log.info("Setting default authorization for the user");
+        userAuthService.updateUserAuth(registrationRequest.getUsername(), "111111");
+        
         return new ResponseEntity<>("User created", HttpStatus.OK);
     }
 

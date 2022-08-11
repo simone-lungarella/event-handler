@@ -11,6 +11,7 @@ import it.os.event.handler.exception.AdminRequiredException;
 import it.os.event.handler.exception.BusinessException;
 import it.os.event.handler.exception.EventNotFoundException;
 import it.os.event.handler.exception.StepNotFoundException;
+import it.os.event.handler.exception.UserNotFoundException;
 import it.os.event.handler.exception.UsernameAlreadyTakenException;
 
 @ControllerAdvice
@@ -27,6 +28,13 @@ public class ControllerExceptionHandler {
     public ResponseEntity<String> handleException(final EventNotFoundException ex, final WebRequest request) {
 
         String bodyOfResponse = "Event not found";
+        return new ResponseEntity<>(bodyOfResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({ UserNotFoundException.class })
+    public ResponseEntity<String> handleMissingUserException(final UserNotFoundException ex, final WebRequest request) {
+
+        String bodyOfResponse = "User not found";
         return new ResponseEntity<>(bodyOfResponse, HttpStatus.NOT_FOUND);
     }
 

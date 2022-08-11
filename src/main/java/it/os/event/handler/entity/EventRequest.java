@@ -22,6 +22,8 @@ public class EventRequest {
     
     private String description;
 
+    private Integer odlNumber;
+
     private String power;
     
     private List<String> operation;
