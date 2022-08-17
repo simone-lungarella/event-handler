@@ -64,7 +64,7 @@ class SchedulerTest {
     @DisplayName("Test retention scheduler")
     void whenRetentionIsExecuted_allExpiredEventShouldBeDeleted() {
 
-        final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
+        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
 
         // Data preparation
         final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
@@ -95,7 +95,7 @@ class SchedulerTest {
     void whenEventIsExpired_notificationMustBeSent() {
 
         final String turbineName = "RO01";
-        final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
+        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
 
         final boolean isInserted = eventSRV.insertNewEvent(turbineName, "1982", "Test", 1, 
             TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now().minusDays(1), LocalDate.now());
@@ -127,7 +127,7 @@ class SchedulerTest {
     void givenNonExpiredEvent_shouldNotSendNotification() {
         
         final String turbineName = "Test turbine";
-        final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
+        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
 
         final boolean isInserted = eventSRV.insertNewEvent(turbineName, "XXXX", "Test", 1, 
             TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());

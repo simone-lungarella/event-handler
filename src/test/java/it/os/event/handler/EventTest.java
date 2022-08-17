@@ -58,7 +58,7 @@ class EventTest {
     @Test
     @DisplayName("Test event creation")
     void whenEventIsInserted_shouldBePersisted() {
-        final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
+        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
         final Integer eventId = eventRepo.save(new EventETY("Turbine name", "XXXX", "Test description",
                 TurbinePower.MEGAWATT.getName(), operations, new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), TurbineStateEnum.MARCHING.getName()));
 
@@ -78,7 +78,7 @@ class EventTest {
     @DisplayName("Test event deletion")
     void whenEventsAreDeleted_shouldBeRemovedFromDb() {
 
-        final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
+        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
 
         // Data preparation
         final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
@@ -96,7 +96,7 @@ class EventTest {
     @DisplayName("Test step creation")
     void whenEventIsCreated_stepsShouldBeInserted() {
 
-        final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
+        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
 
         final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
                 operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
@@ -117,7 +117,7 @@ class EventTest {
     @DisplayName("Test step update")
     void whenStepIsUpdated_databaseShouldBeFullyUpdated() {
 
-        final List<String> operations = Arrays.asList(OperationTypeEnum.GENERATOR_REPLACING.getDescription());
+        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
 
         final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
                 operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
