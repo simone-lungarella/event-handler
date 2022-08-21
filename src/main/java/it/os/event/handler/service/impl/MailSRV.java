@@ -19,17 +19,20 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class MailSRV implements IMailSRV {
 
-    @Value("${mail.server-username}")
-    private String serverUsername;
+	@Value("${mail.server-username}")
+	private String serverUsername;
 
-    @Value("${mail.server-password}")
-    private String serverPassword;
+	@Value("${mail.server-password}")
+	private String serverPassword;
 
-    @Value("${mail.from}")
-    private String mailFrom;
+	@Value("${mail.from}")
+	private String mailFrom;
 
-    @Value("${mail.to}")
-    private String mailTo;
+	@Value("${mail.to.lower-threshold}")
+	private String mailToLower;
+
+	@Value("${mail.to.higher-threshold}")
+	private String mailToHigher;
 
 	private JavaMailSender javaMailSender;
 
@@ -43,24 +46,27 @@ public class MailSRV implements IMailSRV {
 		final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setHost("smtp.gmail.com");
 		mailSender.setPort(587);
-        mailSender.setUsername(serverUsername);
-        mailSender.setPassword(serverPassword);
+		mailSender.setUsername(serverUsername);
+		mailSender.setPassword(serverPassword);
 
-        final Properties props = mailSender.getJavaMailProperties();
+		final Properties props = mailSender.getJavaMailProperties();
 
-        props.put("mail.smtp.auth", true);
-        props.put("mail.smtp.starttls.enable", true);
+		props.put("mail.smtp.auth", true);
+		props.put("mail.smtp.starttls.enable", true);
 		props.put("mail.security.enable", true);
 		props.put("mail.transport.protocol", "smtp");
+		
+		props.setProperty("mail.smtp.starttls.enable", "true");
+		props.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
 
 		return mailSender;
 	}
 
 	@Override
-	public boolean sendMail(final String subj, final String txtMessage) {
-		
-        boolean isMailSent = false;
-        try {
+	public boolean sendMail(final String subj, final String txtMessage, final boolean isHigherThreshold) {
+
+		boolean isMailSent = false;
+		try {
 
 			if (javaMailSender == null) {
 				javaMailSender = createMailSender();
@@ -70,15 +76,19 @@ public class MailSRV implements IMailSRV {
 			final MimeMessageHelper messageHelper = new MimeMessageHelper(mm, true, "UTF-8");
 			messageHelper.setFrom(mailFrom);
 
-			messageHelper.setTo(InternetAddress.parse(mailTo));
+			messageHelper.setTo(InternetAddress.parse(mailToLower));
+			if (isHigherThreshold) {
+				messageHelper.setTo(InternetAddress.parse(mailToHigher));
+			}
+
 			messageHelper.setSubject(subj);
 			messageHelper.setText(txtMessage, true);
 			javaMailSender.send(mm);
-            isMailSent = true;
+			isMailSent = true;
 		} catch (final Exception ex) {
 			log.error("Error while sending e-mail", ex);
-        }
-        return isMailSent;
+		}
+		return isMailSent;
 	}
 
 }

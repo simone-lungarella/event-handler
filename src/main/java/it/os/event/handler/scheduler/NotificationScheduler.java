@@ -46,8 +46,17 @@ public class NotificationScheduler {
                         days = schedulerCFG.getMegaWThreshold();
                     }
                     
-                    if (event.getStartingDateEEMM() != null && LocalDate.parse(event.getStartingDateEEMM()).isBefore(LocalDate.now().minusDays(days))) {
-                        sendMail(event);
+                    if (event.getPermittingDate() != null && !LocalDate.parse(event.getPermittingDate()).isAfter(LocalDate.now().minusDays(days))) {
+                        if (!event.isMailSent()) {
+                            sendMail(event, false);
+                        } else {
+                            log.info("Mail already sent once, checking if it's time to send again");
+                            if (event.getPermittingDate() != null && LocalDate.parse(event.getPermittingDate()).equals(LocalDate.now().minusDays(schedulerCFG.getHigherThreshold()))) {
+                                sendMail(event, true);
+                            } else {
+                                log.info("Mail sent already twice, skipping");
+                            }
+                        }
                     } else {
                         log.info("Event with id: {} not expired yet, checking again at next schedule", event.getId());
                     }
@@ -60,22 +69,24 @@ public class NotificationScheduler {
         log.info("notification scheduler complete");
     }
 
-    private void sendMail(final EventETY event) {
-        if (!event.isMailSent()) {
-            log.info("Sending mail for event with id: {}", event.getId());
-            final String subject = String.format("Titolo abilitativo in scadenza per piazzola: %s", event.getTurbineName());
-            final String body = String.format(
-                "Il titolo abilitativo per la piazzola identificata con: I.%s %s e le opere civili accessorie, scadrà fra 20 giorni", 
-                event.getTurbineNumber(), event.getTurbineName());
-            final boolean mailSent = mailSRV.sendMail(subject, body);
-            
-            if (mailSent) {
-                eventSRV.setMailSent(event.getId());
-            } else {
-                log.error("Error while sending mail for event with id: {}", event.getId());
-            }
+    private void sendMail(final EventETY event, final boolean isOvertime) {
+        
+        log.info("Sending mail for event with id: {}", event.getId());
+        final String subject = String.format("Titolo abilitativo in scadenza per piazzola: %s", event.getTurbineName());
+        String body = String.format("Il titolo abilitativo per la piazzola identificata con: I.%s %s e le opere civili accessorie, scadrà fra 20 giorni", 
+            event.getTurbineNumber(), event.getTurbineName());
+
+        if (isOvertime) {
+            body = String.format("Il titolo abilitativo per la piazzola identificata con: I.%s %s e le opere civili accessorie è in scadenza oggi", 
+            event.getTurbineNumber(), event.getTurbineName());
+        }
+
+        final boolean mailSent = mailSRV.sendMail(subject, body, isOvertime);
+        
+        if (mailSent) {
+            eventSRV.setMailSent(event.getId());
         } else {
-            log.info("Mail already sent for event with id: {}", event.getId());
+            log.error("Error while sending mail for event with id: {}", event.getId());
         }
     }
 
