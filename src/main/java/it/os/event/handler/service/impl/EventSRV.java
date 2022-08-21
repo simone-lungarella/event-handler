@@ -228,7 +228,7 @@ public class EventSRV implements IEventSRV {
             OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
             CSVWriter writer = new CSVWriter(streamWriter);) {
             
-            StringBuilder header = new StringBuilder("")
+            StringBuilder header = new StringBuilder("sep=,\n") // Specifying the separator
                 .append("Nome turbina, ")
                 .append("Numero turbina, ")
                 .append("Numero ODL, ")
