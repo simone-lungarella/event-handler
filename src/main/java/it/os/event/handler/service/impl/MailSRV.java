@@ -55,7 +55,6 @@ public class MailSRV implements IMailSRV {
 		props.put("mail.smtp.starttls.enable", true);
 		props.put("mail.security.enable", true);
 		props.put("mail.transport.protocol", "smtp");
-		
 		props.setProperty("mail.smtp.starttls.enable", "true");
 		props.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
 
@@ -63,7 +62,7 @@ public class MailSRV implements IMailSRV {
 	}
 
 	@Override
-	public boolean sendMail(final String subj, final String txtMessage, final boolean isHigherThreshold) {
+	public boolean sendMail(final String subj, final String txtMessage, final boolean isOvertime) {
 
 		boolean isMailSent = false;
 		try {
@@ -77,7 +76,7 @@ public class MailSRV implements IMailSRV {
 			messageHelper.setFrom(mailFrom);
 
 			messageHelper.setTo(InternetAddress.parse(mailToLower));
-			if (isHigherThreshold) {
+			if (isOvertime) {
 				messageHelper.setTo(InternetAddress.parse(mailToHigher));
 			}
 

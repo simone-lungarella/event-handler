@@ -40,7 +40,6 @@ public class UserCTL extends AbstractCTL implements IUserCTL {
             final HttpServletRequest request) {
 
         log.info("Creating a user with username: {}", registrationRequest.getUsername());
-        
         registrationService.register(registrationRequest);
 
         log.info("Setting default authorization for the user");

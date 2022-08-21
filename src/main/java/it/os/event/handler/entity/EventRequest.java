@@ -19,10 +19,10 @@ public class EventRequest {
     private String turbineName;
 
     private String turbineNumber;
-    
-    private String description;
 
     private Integer odlNumber;
+    
+    private String description;
 
     private String power;
     

@@ -62,7 +62,6 @@ public class EventETY implements Serializable {
 	private String description;
 
 	@Column
-	@NonNull
 	@CsvBindByName(column = "Numero ODL")
     @CsvBindByPosition(position = 3)
 	private Integer odlNumber;
@@ -109,6 +108,8 @@ public class EventETY implements Serializable {
 	private String startingDateOOCC;
 
 	@Column
+	@CsvBindByName(column = "Smontaggio piazzola")
+    @CsvBindByPosition(position = 12)
 	private String completionDate;
 
 	@Column
@@ -120,6 +121,9 @@ public class EventETY implements Serializable {
 	@CsvBindByName(column = "Fine OOCC")
     @CsvBindByPosition(position = 11)
 	private String completionDateOOCC;
+
+	@Column
+	private String permittingDate;
 
 	@Column
 	private boolean mailSent;

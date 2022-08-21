@@ -4,10 +4,25 @@ import lombok.Getter;
 
 public enum OperationTypeEnum {
 
-    GENERATOR_REPLACING("Sost. generatore", "Rimpiazzo generatore"),
-    GEARBOX_REPLACING("Sost. Gearbox", "Rimpiazzo Gearbox"),
-    ROOT_JOINT("Root Joint", "Root joint"),
-    PITCH_ROD("Asta pitch", "Asta pitch");
+    SOST_TRAVERSA("Sostituzione Traversa", "Sostituzione Traversa"),
+    RIP_PALE("Riparazione pale", "Riparazione pale"),
+    SOST_TRAFO("Sostituzione trafo", "Sostituzione trafo"),
+    SOST_GENERATORE("Sostituzione generatore", "Sostituzione generatore"),
+    SOST_RALLA("Sostituzione Ralla", "Sostituzione Ralla"),
+    PULIZIA_TUBOLARE("Pulizia Tubolare", "Pulizia Tubolare"),
+    SOST_IMS("Sostituzione IMS", "Sostituzione IMS"),
+    SERRAGGIO_BULLONI_NOSE_CONE("Serraggio bulloni nose cone", "Serraggio bulloni nose cone"),
+    SOST_STELLA_HUB("Sostituzione Stella HUB", "Sostituzione Stella HUB"),
+    SOST_PALA_DISCESA_ROTORE("Sostituzione Pala discesa rotore", "Sostituzione Pala discesa rotore"),
+    SOST_CUSCINETTO("Sostituzione cuscinetto", "Sostituzione cuscinetto"),
+    SOST_ASTA_PITCH("Sostituzione Asta Pitch", "Sostituzione Asta Pitch"),
+    SOST_YAW_GEAR("Sostituzione Yaw Gear", "Sostituzione Yaw Gear"),
+    SOST_GEARBOX("Sostituzione Gearbox", "Sostituzione Gearbox"),
+    SOST_PALA_RJ("Sostituzione Pala RJ", "Sostituzione Pala RJ"),
+    SOST_ALBERO_LENTO("Sostituzione Albero lento", "Sostituzione Albero lento"),
+    ISPEZIONE_RJ("Ispezione RJ", "Ispezione RJ"),
+    SOST_PALA_ROOT_JOINT("Sostituzione Pala Root Joint", "Sostituzione Pala Root Joint"),
+    MANUTENZIONE_ORDINARIA("Manutenzione ordinaria viabilità", "Manutenzione ordinaria viabilità");
 
     @Getter
     private String name;

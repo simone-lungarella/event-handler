@@ -15,7 +15,7 @@ public class SchedulerCFG {
     @Value("${event.mw-threshold-days}")
     private Integer megaWThreshold;
 
-    @Value("${event.threshold-days-limit}")
-    private Integer higherThreshold;
+    @Value("${event.days-threshold-limit}")
+    private Integer thresholdLimit;
 
 }

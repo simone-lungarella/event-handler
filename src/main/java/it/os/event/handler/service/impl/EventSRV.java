@@ -32,6 +32,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class EventSRV implements IEventSRV {
 
+    /**
+     * Separator for CSV file - EU standard.
+     */
+    private static final char CSV_SEPARATOR = ';';
+
     @Autowired
     private IEventRepo eventRepo;
 
@@ -73,9 +78,10 @@ public class EventSRV implements IEventSRV {
         boolean isSuccessful = false;
         try {
 
-            final EventETY event = new EventETY(turbineName, turbineNumber, eventDescription, odlNumber, power, operation,
+            final EventETY event = new EventETY(turbineName, turbineNumber, eventDescription, power, operation,
                     new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), turbineState.getName());
 
+            event.setOdlNumber(odlNumber);
             event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);
             event.setStartingDateOOCC(startingOOCC != null ? startingOOCC.toString() : null);
 
@@ -135,26 +141,29 @@ public class EventSRV implements IEventSRV {
             if (step.isComplete()) {
                 event.setCompletedSteps(event.getCompletedSteps() + 1);
 
-                if (StepTypeEnum.CHIUSURA_ERMITTING.equals(StepTypeEnum.get(step.getName()))) {
+                if (StepTypeEnum.CHIUSURA_PERMITTING.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
                 } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateEEMM(LocalDate.now().toString());
                 } else if (StepTypeEnum.COMPLETAMENTO_OOCC.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateOOCC(LocalDate.now().toString());
+                } else if (StepTypeEnum.PERMITTING.equals(StepTypeEnum.get(step.getName()))) {
+                    event.setPermittingDate(LocalDate.now().toString());
                 }
             } else {
                 event.setCompletedSteps(event.getCompletedSteps() - 1);
 
-                if (StepTypeEnum.CHIUSURA_ERMITTING.equals(StepTypeEnum.get(step.getName()))) {
+                if (StepTypeEnum.CHIUSURA_PERMITTING.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDate(null);
                 } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateEEMM(null);
                 } else if (StepTypeEnum.COMPLETAMENTO_OOCC.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateOOCC(null);
+                } else if (StepTypeEnum.PERMITTING.equals(StepTypeEnum.get(step.getName()))) {
+                    event.setPermittingDate(null);
                 }
             }
             update(event);
-
         } catch (final Exception e) {
             log.error("Error encountered while updating an event step.", e);
             throw new BusinessException("Error encountered while updating an event step.", e);
@@ -222,6 +231,7 @@ public class EventSRV implements IEventSRV {
             StringBuilder header = new StringBuilder("")
                 .append("Nome turbina, ")
                 .append("Numero turbina, ")
+                .append("Numero ODL, ")
                 .append("Descrizione, ")
                 .append("Numero ODL, ")
                 .append("Data creazione, ")
@@ -231,13 +241,14 @@ public class EventSRV implements IEventSRV {
                 .append("Inizio EEMM, ")
                 .append("Inizio OOCC, ")
                 .append("Fine EEMM, ")
-                .append("Fine OOCC\n");
+                .append("Fine OOCC, ")
+                .append("Smontaggio piazzola\n");
 
             streamWriter.write(header.toString());
             streamWriter.flush();
             StatefulBeanToCsv<EventETY> beanToCsv = new StatefulBeanToCsvBuilder<EventETY>(writer)
                     .withQuotechar(ICSVWriter.NO_QUOTE_CHARACTER)
-                    .withSeparator(ICSVWriter.DEFAULT_SEPARATOR)
+                    .withSeparator(CSV_SEPARATOR)
                     .withOrderedResults(true)
                     .build();
 

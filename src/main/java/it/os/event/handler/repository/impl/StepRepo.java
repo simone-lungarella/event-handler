@@ -1,5 +1,6 @@
 package it.os.event.handler.repository.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -103,12 +104,17 @@ public class StepRepo implements IStepRepo {
     @Override
     public List<StepETY> findAll() {
 
+        List<StepETY> steps = new ArrayList<>();
         try {
-            return entityManager.createQuery(SELECT_STEPS_QUERY, StepETY.class).getResultList();
+            steps = entityManager.createQuery(SELECT_STEPS_QUERY, StepETY.class).getResultList();
+            if (!CollectionUtils.isEmpty(steps)) {
+                steps.sort((step1, step2) -> step1.getId().compareTo(step2.getId()));
+            }
         } catch (Exception e) {
             log.error("Error while retrieving all steps", e);
             throw new BusinessException("Error while retrieving all steps", e);
         }
+        return steps;
     }
 
     @Override
