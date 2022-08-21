@@ -141,7 +141,7 @@ public class EventSRV implements IEventSRV {
             if (step.isComplete()) {
                 event.setCompletedSteps(event.getCompletedSteps() + 1);
 
-                if (StepTypeEnum.SMONTAGGIO_PIAZZOLA.equals(StepTypeEnum.get(step.getName()))) {
+                if (StepTypeEnum.CHIUSURA_PERMITTING.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDate(new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()));
                 } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateEEMM(LocalDate.now().toString());
@@ -153,7 +153,7 @@ public class EventSRV implements IEventSRV {
             } else {
                 event.setCompletedSteps(event.getCompletedSteps() - 1);
 
-                if (StepTypeEnum.SMONTAGGIO_PIAZZOLA.equals(StepTypeEnum.get(step.getName()))) {
+                if (StepTypeEnum.CHIUSURA_PERMITTING.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDate(null);
                 } else if (StepTypeEnum.COMPLETAMENTO_EEMM.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateEEMM(null);
