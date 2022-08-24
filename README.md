@@ -1,4 +1,4 @@
-<h1 align="center">Event Handler</h1>
+<h1 align="center">EVENT HANDLER</h1>
 <h3 align="center">Event Handler service with persistent memory</h3>
 
 <p align="center" >
@@ -11,8 +11,13 @@
   <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white"/>
 </p>
 
-<p> Application that consent to handle a series of events prioritizing them on completion percentage, this application will expose only backend rest endpoints
-to perform all required actions. Each event is associated to specific steps and when each step is set as complete, the event will be considered also complete.
-A background scheduler will make sure that each event is archived when complete for a customizable number of days and another scheduler will send e-mails to warn users about an incoming deadline.</p>
+### Description
+Application that consent to handle a series of events related to windfarms, prioritizing them on completion percentage. This application will expose only backend rest endpoints to perform all required actions. Each event is associated to specific steps and when each step is set as complete, the event will be also considered complete.
+A background scheduler will make sure that each event is archived when complete for a customizable number of days and another scheduler will send e-mails to warn users about an incoming deadline.
 
-<p> The persistence layer is handled by a postgres server. The app is deployed to Heroku and is automated with github actions! </p>
+The Api exposes services to handle user registration and authentication that requires to provide a valid jwt token to access any endpoint. Some specific operations also requires to be an authenticated Admin (eg. user registration).
+
+The persistence layer is handled by a postgres server. The app is deployed to Heroku and is automated with github actions!
+
+### Front end
+The web-app that is allowed to use this api can be accessed from <a href="https://simone-lungarella.github.io/winforce/" > this page </a> and it requires to be authenticated to access every functionality!
