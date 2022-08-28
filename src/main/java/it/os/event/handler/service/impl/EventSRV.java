@@ -233,7 +233,6 @@ public class EventSRV implements IEventSRV {
                 .append("Numero turbina, ")
                 .append("Numero ODL, ")
                 .append("Descrizione, ")
-                .append("Numero ODL, ")
                 .append("Data creazione, ")
                 .append("Stato turbina, ")
                 .append("Tipologia turbina, ")

@@ -58,18 +58,18 @@ public class EventETY implements Serializable {
 	@Column
 	@NonNull
 	@CsvBindByName(column = "Descrizione")
-    @CsvBindByPosition(position = 2)
+    @CsvBindByPosition(position = 3)
 	private String description;
 
 	@Column
 	@CsvBindByName(column = "Numero ODL")
-    @CsvBindByPosition(position = 3)
+    @CsvBindByPosition(position = 2)
 	private Integer odlNumber;
 
 	@Column
 	@NonNull
 	@CsvBindByName(column = "Tipologia turbina")
-    @CsvBindByPosition(position = 5)
+    @CsvBindByPosition(position = 6)
 	private String power;
 
 	@Column
@@ -91,7 +91,7 @@ public class EventETY implements Serializable {
 	@Column
 	@NonNull
 	@CsvBindByName(column = "Stato turbina")
-    @CsvBindByPosition(position = 6)
+    @CsvBindByPosition(position = 5)
 	private String turbineState;
 
 	@Column
