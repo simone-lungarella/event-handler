@@ -23,7 +23,8 @@ public enum OperationTypeEnum {
     ISPEZIONE_RJ("Ispezione RJ", "Ispezione RJ"),
     SOST_BLADE_BEARING("Sostituzione Blade Bearing", "Sostituzione Blade Bearing"),
     SOST_MAIN_BEARING("Sostituzione Main Bearing", "Sostituzione Main Bearing"),
-    MANUTENZIONE_ORDINARIA("Manutenzione ordinaria viabilità", "Manutenzione ordinaria viabilità");
+    MANUTENZIONE_ORDINARIA("Manutenzione ordinaria viabilità", "Manutenzione ordinaria viabilità"),
+    ATTIVITA_VARIE("Attività varie", "Attività varie");
 
     @Getter
     private String name;
