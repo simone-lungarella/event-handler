@@ -21,7 +21,8 @@ public enum OperationTypeEnum {
     SOST_PALA_RJ("Sostituzione Pala RJ", "Sostituzione Pala RJ"),
     SOST_ALBERO_LENTO("Sostituzione Albero lento", "Sostituzione Albero lento"),
     ISPEZIONE_RJ("Ispezione RJ", "Ispezione RJ"),
-    SOST_PALA_ROOT_JOINT("Sostituzione Pala Root Joint", "Sostituzione Pala Root Joint"),
+    SOST_BLADE_BEARING("Sostituzione Blade Bearing", "Sostituzione Blade Bearing"),
+    SOST_MAIN_BEARING("Sostituzione Main Bearing", "Sostituzione Main Bearing"),
     MANUTENZIONE_ORDINARIA("Manutenzione ordinaria viabilità", "Manutenzione ordinaria viabilità");
 
     @Getter
