@@ -25,9 +25,6 @@ import it.os.event.handler.config.SchedulerCFG;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.OperationTypeEnum;
-import it.os.event.handler.enums.StepTypeEnum;
-import it.os.event.handler.enums.TurbinePower;
-import it.os.event.handler.enums.TurbineStateEnum;
 import it.os.event.handler.scheduler.NotificationScheduler;
 import it.os.event.handler.scheduler.RetentionScheduler;
 import it.os.event.handler.service.IEventSRV;
@@ -41,7 +38,7 @@ import it.os.event.handler.service.IStepSRV;
     "spring.datasource.username=postgres",
     "spring.datasource.password=admin", })
 @ActiveProfiles("test")
-class SchedulerTest {
+class SchedulerTest extends AbstractTest {
 
     @Autowired
     RetentionScheduler retentionScheduler;
@@ -63,12 +60,8 @@ class SchedulerTest {
     @Test
     @DisplayName("Test retention scheduler")
     void whenRetentionIsExecuted_allExpiredEventShouldBeDeleted() {
-
-        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
-
         // Data preparation
-        final boolean isInserted = eventSRV.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
-                operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
+        final boolean isInserted = eventSRV.insertNewEvent(getRandomEventRequest());
 
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
@@ -97,8 +90,7 @@ class SchedulerTest {
         final String turbineName = "RO01";
         final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
 
-        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "1982", "Test", 1, 
-            TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now().minusDays(1), LocalDate.now());
+        final boolean isInserted = eventSRV.insertNewEvent(getEventForScheduler(turbineName, operations, LocalDate.now()));
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
@@ -106,14 +98,6 @@ class SchedulerTest {
         EventETY expiredEvent = events.stream().filter(event -> event.getTurbineName().equals(turbineName)).collect(Collectors.toList()).get(0);
         assumeFalse(expiredEvent.isMailSent(), "Mail should not have been sent yet");
 
-        // Updating permitting date
-        final List<StepETY> steps = stepSRV.getAllEventSteps(expiredEvent.getId());
-        for (int i=1; i<=StepTypeEnum.PERMITTING.getOrder(); i++) {
-            steps.get(i).setComplete(true);
-            stepSRV.update(steps.get(i));
-            eventSRV.updateEventStep(steps.get(i));
-        }
-        
         given(schedulerCFG.getMegaWThreshold()).willReturn(0);
         assertDoesNotThrow(() -> notificationScheduler.run());
 
@@ -129,8 +113,7 @@ class SchedulerTest {
         final String turbineName = "Test turbine";
         final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
 
-        final boolean isInserted = eventSRV.insertNewEvent(turbineName, "XXXX", "Test", 1, 
-            TurbinePower.MEGAWATT.getName(), operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
+        final boolean isInserted = eventSRV.insertNewEvent(getEventForScheduler(turbineName, operations, null));
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 

@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +37,7 @@ import it.os.event.handler.service.IStepSRV;
     "spring.datasource.username=postgres",
     "spring.datasource.password=admin", })
 @ActiveProfiles("test")
-class EventTest {
+class EventTest extends AbstractTest {
 
     @Autowired
     IEventRepo eventRepo;
@@ -68,9 +67,7 @@ class EventTest {
         assertTrue(list.stream().map(EventETY::getId).collect(Collectors.toList()).contains(eventId),
                 "The event inserted should be present in the database");
 
-        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
-                operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
-                
+        final boolean isPersisted = eventSrv.insertNewEvent(getRandomEventRequest());
         assertTrue(isPersisted, "The event should have been persisted");
     }
 
@@ -78,11 +75,8 @@ class EventTest {
     @DisplayName("Test event deletion")
     void whenEventsAreDeleted_shouldBeRemovedFromDb() {
 
-        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
-
         // Data preparation
-        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
-                operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
+        final boolean isPersisted = eventSrv.insertNewEvent(getRandomEventRequest());
 
         assumeTrue(isPersisted);
         assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()));
@@ -96,10 +90,7 @@ class EventTest {
     @DisplayName("Test step creation")
     void whenEventIsCreated_stepsShouldBeInserted() {
 
-        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
-
-        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
-                operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
+        final boolean isPersisted = eventSrv.insertNewEvent(getRandomEventRequest());
 
         assumeTrue(isPersisted);
         assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()));
@@ -116,11 +107,7 @@ class EventTest {
     @Test
     @DisplayName("Test step update")
     void whenStepIsUpdated_databaseShouldBeFullyUpdated() {
-
-        final List<String> operations = Arrays.asList(OperationTypeEnum.SOST_GENERATORE.getDescription());
-
-        final boolean isPersisted = eventSrv.insertNewEvent("Turbine name", "XXXX", "eventDescription", 1, TurbinePower.MEGAWATT.getName(),
-                operations, TurbineStateEnum.LIMITED, LocalDate.now(), LocalDate.now());
+        final boolean isPersisted = eventSrv.insertNewEvent(getRandomEventRequest());
 
         assumeTrue(isPersisted);
         assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()));

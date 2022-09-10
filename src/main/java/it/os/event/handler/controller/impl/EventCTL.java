@@ -17,7 +17,6 @@ import it.os.event.handler.controller.IEventCTL;
 import it.os.event.handler.entity.EventETY;
 import it.os.event.handler.entity.EventRequest;
 import it.os.event.handler.entity.StepETY;
-import it.os.event.handler.enums.TurbineStateEnum;
 import it.os.event.handler.exception.EventNotFoundException;
 import it.os.event.handler.exception.StepNotFoundException;
 import it.os.event.handler.service.IEventSRV;
@@ -39,10 +38,7 @@ public class EventCTL implements IEventCTL {
 
         log.info("Creation a new event with description: {}", requestBody.getDescription());
 
-        final boolean isPersisted = eventSRV.insertNewEvent(requestBody.getTurbineName(),
-                requestBody.getTurbineNumber(), requestBody.getDescription(), requestBody.getOdlNumber(),
-                requestBody.getPower(), requestBody.getOperation(), TurbineStateEnum.get(requestBody.getTurbineState()),
-                requestBody.getStartingDateEEMM(), requestBody.getStartingDateOOCC());
+        final boolean isPersisted = eventSRV.insertNewEvent(requestBody);
 
         if (isPersisted) {
             return new ResponseEntity<>("Event persisted correctly", HttpStatus.OK);

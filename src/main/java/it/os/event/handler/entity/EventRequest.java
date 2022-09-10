@@ -35,4 +35,8 @@ public class EventRequest {
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startingDateOOCC;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate permittingDate;
+    
 }

@@ -1,12 +1,11 @@
 package it.os.event.handler.service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import it.os.event.handler.entity.EventETY;
+import it.os.event.handler.entity.EventRequest;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.StepTypeEnum;
-import it.os.event.handler.enums.TurbineStateEnum;
 
 /**
  * Interface service of event handler.
@@ -31,16 +30,10 @@ public interface IEventSRV {
     /**
      * Execute the insertion of a new event and its steps.
      * 
-     * @param turbineName Name of the turbine.
-     * @param eventDescription Event description.
-     * @param operation Type of the operation.
-     * @param turbineState State of the turbine.
-     * @param startingEEMM Starting EEMM.
-     * @param startingOOCC Starting OOCC.
+     * @param requestBody Request body containing all event informations.
      * @return {@code true} if the event is inserted correctly, {@code false} otherwise.
      */
-    public boolean insertNewEvent(String turbineName, String turbineNumber, String eventDescription, Integer odlNumber, String power, List<String> operation, 
-        TurbineStateEnum turbineState, LocalDate startingEEMM, LocalDate startingOOCC);
+    public boolean insertNewEvent(EventRequest requestBody);
 
     /**
      * Delete and event identified by its {@code eventId} and all its steps.

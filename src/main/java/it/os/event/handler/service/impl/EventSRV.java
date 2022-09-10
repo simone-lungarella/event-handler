@@ -19,9 +19,9 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 
 import it.os.event.handler.entity.EventETY;
+import it.os.event.handler.entity.EventRequest;
 import it.os.event.handler.entity.StepETY;
 import it.os.event.handler.enums.StepTypeEnum;
-import it.os.event.handler.enums.TurbineStateEnum;
 import it.os.event.handler.exception.BusinessException;
 import it.os.event.handler.repository.IEventRepo;
 import it.os.event.handler.service.IEventSRV;
@@ -71,19 +71,20 @@ public class EventSRV implements IEventSRV {
     }
 
     @Override
-    public boolean insertNewEvent(final String turbineName, final String turbineNumber, final String eventDescription,
-            final Integer odlNumber, final String power, final List<String> operation, 
-            final TurbineStateEnum turbineState, final LocalDate startingEEMM, final LocalDate startingOOCC) {
+    public boolean insertNewEvent(final EventRequest requestBody) {
 
         boolean isSuccessful = false;
         try {
 
-            final EventETY event = new EventETY(turbineName, turbineNumber, eventDescription, power, operation,
-                    new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), turbineState.getName());
+            final EventETY event = new EventETY(requestBody.getTurbineName(), requestBody.getTurbineNumber(),
+                    requestBody.getDescription(), requestBody.getPower(), requestBody.getOperation(),
+                    new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), requestBody.getTurbineState());
 
-            event.setOdlNumber(odlNumber);
-            event.setStartingDateEEMM(startingEEMM != null ? startingEEMM.toString() : null);
-            event.setStartingDateOOCC(startingOOCC != null ? startingOOCC.toString() : null);
+            event.setOdlNumber(requestBody.getOdlNumber());
+            event.setStartingDateEEMM(
+                    requestBody.getStartingDateEEMM() != null ? requestBody.getStartingDateEEMM().toString() : null);
+            event.setStartingDateOOCC(requestBody.getStartingDateOOCC() != null ? requestBody.getStartingDateOOCC().toString() : null);
+            event.setPermittingDate(requestBody.getPermittingDate() != null ? requestBody.getPermittingDate().toString() : null);
 
             final Integer eventId = eventRepo.save(event);
 
@@ -147,9 +148,8 @@ public class EventSRV implements IEventSRV {
                     event.setCompletionDateEEMM(LocalDate.now().toString());
                 } else if (StepTypeEnum.COMPLETAMENTO_OOCC.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateOOCC(LocalDate.now().toString());
-                } else if (StepTypeEnum.PERMITTING.equals(StepTypeEnum.get(step.getName()))) {
-                    event.setPermittingDate(LocalDate.now().toString());
                 }
+
             } else {
                 event.setCompletedSteps(event.getCompletedSteps() - 1);
 
@@ -159,9 +159,8 @@ public class EventSRV implements IEventSRV {
                     event.setCompletionDateEEMM(null);
                 } else if (StepTypeEnum.COMPLETAMENTO_OOCC.equals(StepTypeEnum.get(step.getName()))) {
                     event.setCompletionDateOOCC(null);
-                } else if (StepTypeEnum.PERMITTING.equals(StepTypeEnum.get(step.getName()))) {
-                    event.setPermittingDate(null);
                 }
+
             }
             update(event);
         } catch (final Exception e) {
@@ -222,26 +221,26 @@ public class EventSRV implements IEventSRV {
     }
 
     public byte[] writeToCsv(List<EventETY> turbines) {
-        
+
         try (
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
-            CSVWriter writer = new CSVWriter(streamWriter);) {
-            
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
+                CSVWriter writer = new CSVWriter(streamWriter);) {
+
             StringBuilder header = new StringBuilder("sep=,\n") // Specifying the separator
-                .append("Nome turbina, ")
-                .append("Numero turbina, ")
-                .append("Numero ODL, ")
-                .append("Descrizione, ")
-                .append("Data creazione, ")
-                .append("Stato turbina, ")
-                .append("Tipologia turbina, ")
-                .append("Operazioni, ")
-                .append("Inizio EEMM, ")
-                .append("Inizio OOCC, ")
-                .append("Fine EEMM, ")
-                .append("Fine OOCC, ")
-                .append("Smontaggio piazzola\n");
+                    .append("Nome turbina, ")
+                    .append("Numero turbina, ")
+                    .append("Numero ODL, ")
+                    .append("Descrizione, ")
+                    .append("Data creazione, ")
+                    .append("Stato turbina, ")
+                    .append("Tipologia turbina, ")
+                    .append("Operazioni, ")
+                    .append("Inizio EEMM, ")
+                    .append("Inizio OOCC, ")
+                    .append("Fine EEMM, ")
+                    .append("Fine OOCC, ")
+                    .append("Smontaggio piazzola\n");
 
             streamWriter.write(header.toString());
             streamWriter.flush();
@@ -255,11 +254,11 @@ public class EventSRV implements IEventSRV {
             streamWriter.flush();
 
             return stream.toByteArray();
-		} catch(Exception ex) {
-			log.error("Error while exporting data as CSV file", ex);
-			throw new BusinessException("Error while exporting data as CSV file", ex);
-		}
-	}
+        } catch (Exception ex) {
+            log.error("Error while exporting data as CSV file", ex);
+            throw new BusinessException("Error while exporting data as CSV file", ex);
+        }
+    }
 
     @Override
     public void setMailSent(final Integer id) {
