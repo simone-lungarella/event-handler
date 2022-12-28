@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDate;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.CollectionUtils;
@@ -28,15 +31,13 @@ import it.os.event.handler.enums.OperationTypeEnum;
 import it.os.event.handler.scheduler.NotificationScheduler;
 import it.os.event.handler.scheduler.RetentionScheduler;
 import it.os.event.handler.service.IEventSRV;
+import it.os.event.handler.service.IMailSRV;
 import it.os.event.handler.service.IStepSRV;
 
 /**
  * Test class for retention scheduler.
  */
-@SpringBootTest(properties = { 
-    "spring.datasource.url=jdbc:postgresql://localHost:5432/event_handler", 
-    "spring.datasource.username=postgres",
-    "spring.datasource.password=admin", })
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class SchedulerTest extends AbstractTest {
 
@@ -52,9 +53,13 @@ class SchedulerTest extends AbstractTest {
     @Autowired
     IStepSRV stepSRV;
 
+    @MockBean
+    IMailSRV mailSRV;
+
     @BeforeEach
     void setup() {
         eventSRV.deleteAllEvents();
+        given(mailSRV.sendMail(anyString(), anyString(), anyBoolean())).willReturn(true);
     }
 
     @Test
@@ -128,4 +133,5 @@ class SchedulerTest extends AbstractTest {
         expiredEvent = events.stream().filter(event -> event.getTurbineName().equals(turbineName)).collect(Collectors.toList()).get(0);
         assertFalse(expiredEvent.isMailSent(), "Mail should not have been sent if expiration is not reached");
     }
+
 }

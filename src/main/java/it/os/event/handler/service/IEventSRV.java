@@ -96,4 +96,5 @@ public interface IEventSRV {
      * @return List of uncompleted events.
      */
     public List<EventETY> getUncompletedEvents();
+
 }

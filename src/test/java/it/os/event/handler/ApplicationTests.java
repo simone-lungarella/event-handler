@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -20,10 +21,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-@SpringBootTest(properties = { 
-    "spring.datasource.url=jdbc:postgresql://localHost:5432/event_handler", 
-    "spring.datasource.username=postgres",
-    "spring.datasource.password=admin", })
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class ApplicationTests {
 

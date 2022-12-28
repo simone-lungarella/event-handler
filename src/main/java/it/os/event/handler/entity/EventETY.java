@@ -126,6 +126,9 @@ public class EventETY implements Serializable {
 	private String permittingDate;
 
 	@Column
+	private String priorNotification;
+
+	@Column
 	private boolean mailSent;
 
 }

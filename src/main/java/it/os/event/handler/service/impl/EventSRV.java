@@ -85,6 +85,7 @@ public class EventSRV implements IEventSRV {
                     requestBody.getStartingDateEEMM() != null ? requestBody.getStartingDateEEMM().toString() : null);
             event.setStartingDateOOCC(requestBody.getStartingDateOOCC() != null ? requestBody.getStartingDateOOCC().toString() : null);
             event.setPermittingDate(requestBody.getPermittingDate() != null ? requestBody.getPermittingDate().toString() : null);
+            event.setPriorNotification(requestBody.getPriorNotification() != null ? requestBody.getPriorNotification().toString() : null);
 
             final Integer eventId = eventRepo.save(event);
 

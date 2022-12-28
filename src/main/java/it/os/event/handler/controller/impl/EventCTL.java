@@ -71,6 +71,10 @@ public class EventCTL implements IEventCTL {
             if (requestBody.getStartingDateOOCC() != null) {
                 event.setStartingDateOOCC(requestBody.getStartingDateOOCC().toString());
             }
+            if (requestBody.getPriorNotification() != null) {
+                event.setPriorNotification(requestBody.getPriorNotification().toString());
+            }
+
             eventSRV.update(event);
 
             return new ResponseEntity<>("Event updated correctly", HttpStatus.OK);

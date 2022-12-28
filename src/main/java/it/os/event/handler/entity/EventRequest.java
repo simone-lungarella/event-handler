@@ -38,5 +38,8 @@ public class EventRequest {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate permittingDate;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate priorNotification;
     
 }
