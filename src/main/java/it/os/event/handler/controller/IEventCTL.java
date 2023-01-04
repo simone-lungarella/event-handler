@@ -106,4 +106,13 @@ public interface IEventCTL {
         })
         @GetMapping("/events/csv")
         ResponseEntity<byte[]> getAllEventsAsCsv(HttpServletRequest request);
+
+        @Operation(summary = "Returns all events completed", description = "Returns all events completed", tags = { "Event" })
+        @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = List.class)))
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Events retrieved"),
+                        @ApiResponse(responseCode = "500", description = "Error while retrieving events")
+        })
+        @GetMapping("/events/completed")
+        ResponseEntity<List<EventETY>> getAllCompletedEvents(HttpServletRequest request);
 }

@@ -147,4 +147,12 @@ public class EventCTL implements IEventCTL {
                 .body(csvFile);
     }
 
+    @Override
+    public ResponseEntity<List<EventETY>> getAllCompletedEvents(HttpServletRequest request) {
+        log.info("Retrieving all completed events");
+
+        final List<EventETY> events = eventSRV.getAllCompletedEvents();
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
 }

@@ -48,7 +48,7 @@ public class EventSRV implements IEventSRV {
 
         final List<EventETY> orderedEvents = new ArrayList<>();
         try {
-            final List<EventETY> events = eventRepo.getAllEvents();
+            final List<EventETY> events = eventRepo.getUncompletedEvents();
 
             log.info("Ordering events by their completion percentage");
             if (!CollectionUtils.isEmpty(events)) {

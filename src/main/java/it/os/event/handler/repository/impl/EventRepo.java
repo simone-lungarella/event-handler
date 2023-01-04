@@ -84,7 +84,7 @@ public class EventRepo implements IEventRepo {
     public List<EventETY> getAllCompletedEvents() {
 
         try {
-            return entityManager.createQuery("SELECT e FROM EventETY e WHERE e.completionDate != null", EventETY.class)
+            return entityManager.createQuery("SELECT e FROM EventETY e WHERE e.completionDate != null ORDER BY e.completionDate DESC", EventETY.class)
                     .getResultList();
         } catch (Exception e) {
             log.error("Error encountered while retrieving events to retain", e);

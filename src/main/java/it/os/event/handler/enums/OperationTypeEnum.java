@@ -24,7 +24,8 @@ public enum OperationTypeEnum {
     SOST_BLADE_BEARING("Sostituzione Blade Bearing", "Sostituzione Blade Bearing"),
     SOST_MAIN_BEARING("Sostituzione Main Bearing", "Sostituzione Main Bearing"),
     MANUTENZIONE_ORDINARIA("Manutenzione ordinaria viabilità", "Manutenzione ordinaria viabilità"),
-    ATTIVITA_VARIE("Attività varie", "Attività varie");
+    ATTIVITA_VARIE("Attività varie", "Attività varie"),
+    BONIFICA_AMBIENTALE("Bonifica ambientale", "Bonifica ambientale");
 
     @Getter
     private String name;
