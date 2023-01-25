@@ -28,7 +28,7 @@ import it.os.event.handler.entity.RegistrationRequest;
  * Interface of user controller.
  */
 @RequestMapping("/v1.0.0/registration")
-@CrossOrigin(origins = "${allowed-cross-orgin}")
+@CrossOrigin(origins = {"${allowed-cross-orgin}", "${extra-allowed-cross-origin}"})
 public interface IUserCTL {
 
         @Operation(summary = "Registrate a new user", description = "Generate a new user and persist its information", tags = { "User" })

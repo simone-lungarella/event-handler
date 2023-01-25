@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +29,7 @@ import it.os.event.handler.entity.StepETY;
  * Interface of event controller.
  */
 @RequestMapping("/v1.0.0")
-@CrossOrigin(origins = "${allowed-cross-orgin}")
+@CrossOrigin(origins = {"${allowed-cross-orgin}", "${extra-allowed-cross-origin}"})
 public interface IEventCTL {
 
         @Operation(summary = "Generate a new event and persist it", description = "Generate a new event and persist it", tags = { "Event" })
@@ -76,7 +77,7 @@ public interface IEventCTL {
                         @ApiResponse(responseCode = "500", description = "Error while retrieving steps")
         })
         @GetMapping("/steps/{eventId}")
-        ResponseEntity<List<StepETY>> getStepsByEventId(@RequestParam(value = "eventId") Integer eventId, HttpServletRequest request);
+        ResponseEntity<List<StepETY>> getStepsByEventId(@PathVariable(value = "eventId") Integer eventId, HttpServletRequest request);
 
         @Operation(summary = "Set a step in to a complete state", description = "Set a step in to a complete state", tags = {"Step" })
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class)))

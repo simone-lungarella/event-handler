@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/")
-@CrossOrigin(origins = "${allowed-cross-orgin}")
+@CrossOrigin(origins = {"${allowed-cross-orgin}", "${extra-allowed-cross-origin}"})
 public class LoginCTL extends AbstractCTL {
 
     @Autowired

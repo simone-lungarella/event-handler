@@ -54,7 +54,7 @@ public class StepRepo implements IStepRepo {
     public List<StepETY> getStepsByEventId(final Integer eventId) {
         try {
             return entityManager
-                    .createQuery("SELECT S FROM StepETY S WHERE S.eventId = (:eventId)", StepETY.class)
+                    .createQuery("SELECT S FROM StepETY S WHERE S.eventId = (:eventId) ORDER BY S.id ASC", StepETY.class)
                     .setParameter("eventId", eventId)
                     .getResultList();
         } catch (final Exception e) {

@@ -74,6 +74,9 @@ public class EventCTL implements IEventCTL {
             if (requestBody.getPriorNotification() != null) {
                 event.setPriorNotification(requestBody.getPriorNotification().toString());
             }
+            if (requestBody.getPermittingDate() != null) {
+                event.setPermittingDate(requestBody.getPermittingDate().toString());
+            }
 
             eventSRV.update(event);
 

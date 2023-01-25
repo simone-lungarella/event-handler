@@ -1,0 +1,11 @@
+### Getting steps for event 1 using jwt
+GET http://localhost:8080/v1.0.0/steps/414
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY3NDUwMTE1NCwiZXhwIjoxNzA2MDU4MTA2fQ.oWW9x5Im73o9Wf_J6Gw5RHeEigPGuMYYFmmfYA0Jxrk
+
+### Updating step
+PUT http://localhost:8080/v1.0.0/step/complete?stepId=226&isCompleted=true
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY3NDUwMTE1NCwiZXhwIjoxNzA2MDU4MTA2fQ.oWW9x5Im73o9Wf_J6Gw5RHeEigPGuMYYFmmfYA0Jxrk
+
+### Get event
+GET http://localhost:8080/v1.0.0/events
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY3NDUwMTE1NCwiZXhwIjoxNzA2MDU4MTA2fQ.oWW9x5Im73o9Wf_J6Gw5RHeEigPGuMYYFmmfYA0Jxrk
