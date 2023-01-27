@@ -44,11 +44,17 @@ public class EventSRV implements IEventSRV {
     private IStepSRV stepSrv;
 
     @Override
-    public List<EventETY> getOrderedEvents() {
+    public List<EventETY> getOrderedEvents(boolean includeCompleted) {
 
         final List<EventETY> orderedEvents = new ArrayList<>();
         try {
-            final List<EventETY> events = eventRepo.getUncompletedEvents();
+            
+            List<EventETY> events = new ArrayList<>();
+            if (includeCompleted) {
+                events = eventRepo.getAllEvents();
+            } else {
+                events = eventRepo.getUncompletedEvents();
+            }
 
             log.info("Ordering events by their completion percentage");
             if (!CollectionUtils.isEmpty(events)) {
@@ -194,30 +200,9 @@ public class EventSRV implements IEventSRV {
     }
 
     @Override
-    public List<EventETY> getEvents(final StepTypeEnum reachedStep) {
-
-        final List<EventETY> stepReachedEvent = new ArrayList<>();
-        try {
-            final List<EventETY> events = getOrderedEvents();
-
-            for (final EventETY event : events) {
-                if (event.getCompletedSteps() + 1 == reachedStep.getOrder()) {
-                    stepReachedEvent.add(event);
-                }
-            }
-
-        } catch (final Exception e) {
-            log.error("Error encountered while retrieving events for the step specified.", e);
-            throw new BusinessException("Error encountered while retrieving events for the step specified.", e);
-        }
-
-        return stepReachedEvent;
-    }
-
-    @Override
     public byte[] getTurbinesForExport() {
 
-        final List<EventETY> events = getOrderedEvents();
+        final List<EventETY> events = getOrderedEvents(true);
         return writeToCsv(events);
     }
 

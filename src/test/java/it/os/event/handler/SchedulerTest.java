@@ -70,7 +70,7 @@ class SchedulerTest extends AbstractTest {
 
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
-        final EventETY insertedEvent = eventSRV.getOrderedEvents().get(0);
+        final EventETY insertedEvent = eventSRV.getOrderedEvents(true).get(0);
         final List<StepETY> steps = stepSRV.getAllEventSteps(insertedEvent.getId());
         assumeFalse(CollectionUtils.isEmpty(steps), "All steps must be existing and set to complete to test retention");
 
@@ -99,14 +99,14 @@ class SchedulerTest extends AbstractTest {
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
-        List<EventETY> events = eventSRV.getOrderedEvents();
+        List<EventETY> events = eventSRV.getOrderedEvents(true);
         EventETY expiredEvent = events.stream().filter(event -> event.getTurbineName().equals(turbineName)).collect(Collectors.toList()).get(0);
         assumeFalse(expiredEvent.isMailSent(), "Mail should not have been sent yet");
 
         given(schedulerCFG.getMegaWThreshold()).willReturn(0);
         assertDoesNotThrow(() -> notificationScheduler.run());
 
-        events = eventSRV.getOrderedEvents();
+        events = eventSRV.getOrderedEvents(true);
         expiredEvent = events.stream().filter(event -> event.getTurbineName().equals(turbineName)).collect(Collectors.toList()).get(0);
         assertTrue(expiredEvent.isMailSent(), "Mail should have been sent");
     }
@@ -122,14 +122,14 @@ class SchedulerTest extends AbstractTest {
         
         assumeTrue(isInserted, "The event should be inserted to test the scheduler");
 
-        List<EventETY> events = eventSRV.getOrderedEvents();
+        List<EventETY> events = eventSRV.getOrderedEvents(true);
         EventETY expiredEvent = events.stream().filter(event -> event.getTurbineName().equals(turbineName)).collect(Collectors.toList()).get(0);
         assumeFalse(expiredEvent.isMailSent(), "Mail should not have been sent yet");
 
         given(schedulerCFG.getMegaWThreshold()).willReturn(5);
         assertDoesNotThrow(() -> notificationScheduler.run());
 
-        events = eventSRV.getOrderedEvents();
+        events = eventSRV.getOrderedEvents(true);
         expiredEvent = events.stream().filter(event -> event.getTurbineName().equals(turbineName)).collect(Collectors.toList()).get(0);
         assertFalse(expiredEvent.isMailSent(), "Mail should not have been sent if expiration is not reached");
     }

@@ -77,10 +77,10 @@ class EventTest extends AbstractTest {
         final boolean isPersisted = eventSrv.insertNewEvent(getRandomEventRequest());
 
         assumeTrue(isPersisted);
-        assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()));
+        assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents(true)));
 
         eventSrv.deleteAllEvents();
-        assertTrue(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()), "After deletion, no event should be existing");
+        assertTrue(CollectionUtils.isEmpty(eventSrv.getOrderedEvents(true)), "After deletion, no event should be existing");
         assertTrue(CollectionUtils.isEmpty(stepSRV.getAllSteps()), "After deletion, no steps should be existing");
     }
 
@@ -91,9 +91,9 @@ class EventTest extends AbstractTest {
         final boolean isPersisted = eventSrv.insertNewEvent(getRandomEventRequest());
 
         assumeTrue(isPersisted);
-        assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()));
+        assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents(true)));
 
-        final List<EventETY> events = eventSrv.getOrderedEvents();
+        final List<EventETY> events = eventSrv.getOrderedEvents(true);
         final List<StepETY> steps = stepSRV.getAllSteps();
         assertEquals(StepTypeEnum.values().length, steps.size());
 
@@ -108,9 +108,9 @@ class EventTest extends AbstractTest {
         final boolean isPersisted = eventSrv.insertNewEvent(getRandomEventRequest());
 
         assumeTrue(isPersisted);
-        assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents()));
+        assumeFalse(CollectionUtils.isEmpty(eventSrv.getOrderedEvents(true)));
 
-        final List<EventETY> allEvents = eventSrv.getOrderedEvents();
+        final List<EventETY> allEvents = eventSrv.getOrderedEvents(true);
         final EventETY vipEvent = allEvents.get(0);
 
         assumeFalse(vipEvent == null);

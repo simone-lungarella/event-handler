@@ -51,7 +51,7 @@ public class EventCTL implements IEventCTL {
     public ResponseEntity<String> updateEvent(final EventRequest requestBody, final HttpServletRequest request) {
 
         log.info("Update event with name: {}", requestBody.getTurbineName());
-        final List<EventETY> events = eventSRV.getOrderedEvents().stream()
+        final List<EventETY> events = eventSRV.getOrderedEvents(true).stream()
                 .filter(event -> event.getTurbineName().equals(requestBody.getTurbineName()))
                 .collect(Collectors.toList());
 
@@ -85,10 +85,10 @@ public class EventCTL implements IEventCTL {
     }
 
     @Override
-    public ResponseEntity<List<EventETY>> getAllEvents(final HttpServletRequest request) {
+    public ResponseEntity<List<EventETY>> getAllEvents(boolean includeCompleted, final HttpServletRequest request) {
         log.info("Retrieving all events");
 
-        final List<EventETY> events = eventSRV.getOrderedEvents();
+        final List<EventETY> events = eventSRV.getOrderedEvents(includeCompleted);
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 

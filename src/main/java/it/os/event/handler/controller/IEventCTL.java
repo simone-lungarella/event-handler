@@ -68,7 +68,7 @@ public interface IEventCTL {
                         @ApiResponse(responseCode = "500", description = "Error while retrieving events")
         })
         @GetMapping("/events")
-        ResponseEntity<List<EventETY>> getAllEvents(HttpServletRequest request);
+        ResponseEntity<List<EventETY>> getAllEvents(@RequestParam(required = false) boolean includeCompleted, HttpServletRequest request);
 
         @Operation(summary = "Returns all steps for a given event", description = "Returns all steps for a given event", tags = { "Step" })
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = List.class)))
