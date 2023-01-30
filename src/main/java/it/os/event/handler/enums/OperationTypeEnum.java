@@ -1,7 +1,11 @@
 package it.os.event.handler.enums;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum OperationTypeEnum {
 
     SOST_TRAVERSA("Sostituzione Traversa", "Sostituzione Traversa"),
@@ -25,18 +29,12 @@ public enum OperationTypeEnum {
     SOST_MAIN_BEARING("Sostituzione Main Bearing", "Sostituzione Main Bearing"),
     MANUTENZIONE_ORDINARIA("Manutenzione ordinaria viabilità", "Manutenzione ordinaria viabilità"),
     ATTIVITA_VARIE("Attività varie", "Attività varie"),
-    BONIFICA_AMBIENTALE("Bonifica ambientale", "Bonifica ambientale");
+    BONIFICA_AMBIENTALE("Bonifica ambientale", "Bonifica ambientale"),
+    SOST_PALA("Sostituzione Pala", "Sostituzione pala"),
+    SOST_PITCH_GEAR("Sostituzione Pitch Gear", "Sostituzione Pitch Gear");
 
-    @Getter
     private String name;
-
-    @Getter
     private String description;
-
-    OperationTypeEnum(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
 
     public static OperationTypeEnum get(final String name) {
         for (OperationTypeEnum operation : OperationTypeEnum.values()) {
