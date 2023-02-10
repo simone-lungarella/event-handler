@@ -13,3 +13,18 @@ Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY3NDUwM
 ### Get events including completed using param: includeCompleted
 GET http://localhost:8080/v1.0.0/events?includeCompleted=true
 Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY3NDUwMTE1NCwiZXhwIjoxNzA2MDU4MTA2fQ.oWW9x5Im73o9Wf_J6Gw5RHeEigPGuMYYFmmfYA0Jxrk
+
+### Creating an event
+POST http://localhost:8080/v1.0.0/event
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY3NDUwMTE1NCwiZXhwIjoxNzA2MDU4MTA2fQ.oWW9x5Im73o9Wf_J6Gw5RHeEigPGuMYYFmmfYA0Jxrk
+Content-Type: application/json
+
+{
+    "turbineName": "Test",
+    "turbineNumber": "Test",
+    "odlNumber": 0,
+    "description": "Test",
+    "power": "Test",
+    "operation": ["Ispezione RJ"],
+    "turbineState": "In Marcia"
+}

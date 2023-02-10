@@ -36,6 +36,7 @@ public interface IEventCTL {
         @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class)))
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Event saved"),
+                        @ApiResponse(responseCode = "400", description = "Invalid event data"),
                         @ApiResponse(responseCode = "500", description = "Error while saving event")
         })
         @PostMapping("/event")

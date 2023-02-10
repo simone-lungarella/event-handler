@@ -58,10 +58,10 @@ public class EventSRV implements IEventSRV {
 
             log.info("Ordering events by their completion percentage");
             if (!CollectionUtils.isEmpty(events)) {
+                log.info("Ordering same percentage events by their creation date");
                 for (int i = 0; i <= StepTypeEnum.values().length; i++) {
                     final int currentStep = i;
 
-                    log.info("Ordering same percentage events by their creation date");
                     final List<EventETY> samePercentage = events.stream()
                             .filter(ev -> currentStep == ev.getCompletedSteps()).collect(Collectors.toList());
                     samePercentage.sort((ev1, ev2) -> ev1.getCreationDate().compareTo(ev2.getCreationDate()));
