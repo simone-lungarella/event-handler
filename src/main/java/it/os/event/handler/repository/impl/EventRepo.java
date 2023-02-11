@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Repository
-@Transactional
 public class EventRepo implements IEventRepo {
 
     @PersistenceContext

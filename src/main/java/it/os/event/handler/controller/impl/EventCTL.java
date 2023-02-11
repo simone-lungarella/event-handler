@@ -36,7 +36,7 @@ public class EventCTL implements IEventCTL {
     @Override
     public ResponseEntity<String> createEvent(final EventRequest requestBody, final HttpServletRequest request) {
 
-        log.info("Creation a new event with description: {}", requestBody.getDescription());
+        log.info("Creating windfarm of name: {}", requestBody.getTurbineName());
 
         final boolean isPersisted = eventSRV.insertNewEvent(requestBody);
 
@@ -50,7 +50,7 @@ public class EventCTL implements IEventCTL {
     @Override
     public ResponseEntity<String> updateEvent(final EventRequest requestBody, final HttpServletRequest request) {
 
-        log.info("Update event with name: {}", requestBody.getTurbineName());
+        log.info("Update windfarm with name: {}", requestBody.getTurbineName());
         final List<EventETY> events = eventSRV.getOrderedEvents(true).stream()
                 .filter(event -> event.getTurbineName().equals(requestBody.getTurbineName()))
                 .collect(Collectors.toList());

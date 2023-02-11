@@ -87,7 +87,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private boolean isValidJwtToken(final String token) {
 
-        log.info("Validating jwt");
+        log.debug("Validating jwt");
         boolean isValidJwtToken = true;
         try {
 
@@ -106,9 +106,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
             final DefaultJwtSignatureValidator validator = new DefaultJwtSignatureValidator(sa, secretKeySpec);
 
-            log.info("Proceeding with validation of token");
+            log.debug("Proceeding with validation of token");
             if (!validator.isValid(tokenWithoutSignature, signature)) {
-                log.info("Token is not valid");
+                log.warn("Token is not valid");
                 isValidJwtToken = false;
             } else {
                 log.info("Token validated correctly");
@@ -132,13 +132,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private String parseJwt(final HttpServletRequest request) {
 
-        log.info("Parsing jwt token");
+        log.debug("Parsing jwt token");
         final String headerAuth = request.getHeader("Authorization");
 
         if (!StringUtils.isEmpty(headerAuth) && (headerAuth.startsWith("bearer ") || headerAuth.startsWith("Bearer "))) {
             return headerAuth.substring(7, headerAuth.length());
         } else {
-            log.info("No token found in request: {}", headerAuth);
+            log.warn("No token found in request: {}", headerAuth);
             return null;
         }
 
