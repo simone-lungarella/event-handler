@@ -131,4 +131,7 @@ public class EventETY implements Serializable {
 	@Column
 	private boolean mailSent;
 
+	@Column
+	private Boolean toNotDismantle;
+
 }

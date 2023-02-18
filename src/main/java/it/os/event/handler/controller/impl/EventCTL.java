@@ -65,6 +65,8 @@ public class EventCTL implements IEventCTL {
             event.setTurbineState(requestBody.getTurbineState());
             event.setTurbineNumber(requestBody.getTurbineNumber());
             event.setPower(requestBody.getPower());
+            event.setToNotDismantle(requestBody.getToNotDismantle() != null ? requestBody.getToNotDismantle() : false);
+
             if (requestBody.getStartingDateEEMM() != null) {
                 event.setStartingDateEEMM(requestBody.getStartingDateEEMM().toString());
             }

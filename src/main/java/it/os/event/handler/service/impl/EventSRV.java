@@ -89,6 +89,7 @@ public class EventSRV implements IEventSRV {
                     requestBody.getDescription(), requestBody.getPower(), requestBody.getOperation(),
                     new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date()), requestBody.getTurbineState());
 
+            event.setToNotDismantle(requestBody.getToNotDismantle() != null ? requestBody.getToNotDismantle() : false);
             event.setOdlNumber(requestBody.getOdlNumber());
             event.setStartingDateEEMM(requestBody.getStartingDateEEMM() != null ? requestBody.getStartingDateEEMM().toString() : null);
             event.setStartingDateOOCC(requestBody.getStartingDateOOCC() != null ? requestBody.getStartingDateOOCC().toString() : null);

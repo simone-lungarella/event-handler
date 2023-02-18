@@ -29,6 +29,8 @@ public class EventRequest {
     private List<String> operation;
    
     private String turbineState;
+
+    private Boolean toNotDismantle;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startingDateEEMM;
@@ -41,5 +43,4 @@ public class EventRequest {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate priorNotification;
-    
 }
