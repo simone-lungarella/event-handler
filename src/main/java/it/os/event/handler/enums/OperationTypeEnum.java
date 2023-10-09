@@ -33,7 +33,8 @@ public enum OperationTypeEnum {
     SOST_PALA("Sostituzione Pala", "Sostituzione pala"),
     SOST_PITCH_GEAR("Sostituzione Pitch Gear", "Sostituzione Pitch Gear"),
     VASCA_STERRATO("Vasca sterrato", "Vasca sterrato"),
-    VASCA_ASFALTO("Vasca asfalto", "Vasca asfalto");
+    VASCA_ASFALTO("Vasca asfalto", "Vasca asfalto"),
+    ISPEZIONE_PALE_UT_CON_PLE("Ispezione pale UT con PLE", "Ispezione pale UT con PLE");
 
     private String name;
     private String description;
