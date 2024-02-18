@@ -12,12 +12,12 @@
 </p>
 
 ### Description
-Application that consent to handle a series of events related to windfarms, prioritizing them on completion percentage. This application will expose only backend rest endpoints to perform all required actions. Each event is associated to specific steps and when each step is set as complete, the event will be also considered complete.
+An application that consents to handle a series of events related to windfarms, prioritizing them on completion percentage. This application will expose only backend rest endpoints to perform all required actions. Each event is associated with specific steps and when each step is set as complete, the event will be also considered complete.
 A background scheduler will make sure that each event is archived when complete for a customizable number of days and another scheduler will send e-mails to warn users about an incoming deadline.
 
-The Api exposes services to handle user registration and authentication that requires to provide a valid jwt token to access any endpoint. Some specific operations also requires to be an authenticated Admin (eg. user registration).
+The API exposes services to handle user registration and authentication that require providing a valid JWT token to access any endpoint. Some specific operations also require to be an authenticated Admin (eg. user registration).
 
-The persistence layer is handled by a postgres server. The app is deployed to Heroku and is automated with github actions!
+The persistence layer is handled by a Postgres server. The app is deployed to Heroku and is automated with GitHub actions!
 
 ### Front end
-The web-app that is allowed to use this api can be accessed from <a href="https://simone-lungarella.github.io/winforce/" > this page </a> and it requires to be authenticated to access every functionality!
+The web app that is allowed to use this API can be accessed from <a href="https://simone-lungarella.github.io/winforce/"> this page </a> and it requires to be authenticated to access every functionality!

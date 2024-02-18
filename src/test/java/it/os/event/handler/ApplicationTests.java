@@ -42,14 +42,16 @@ class ApplicationTests {
 
 		final String username = "Admin";
 		final String secret = "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4";
-        Key signingKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
+		Key signingKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
+				SignatureAlgorithm.HS256.getJcaName());
 
-        String token = Jwts.builder().setSubject(("Admin")).setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + 31556952000l))
-                .signWith(SignatureAlgorithm.HS256, signingKey).compact();
+		String token = Jwts.builder().setSubject(("Admin")).setIssuedAt(new Date())
+				.setExpiration(new Date((new Date()).getTime() + 31556952000l))
+				.signWith(SignatureAlgorithm.HS256, signingKey).compact();
 
-        Claims claims = Jwts.parser().setSigningKey(secret.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(token.trim()).getBody();
+		Claims claims = Jwts.parser().setSigningKey(secret.getBytes(StandardCharsets.UTF_8))
+				.parseClaimsJws(token.trim()).getBody();
 
-        assertEquals(username, claims.getSubject());
+		assertEquals(username, claims.getSubject());
 	}
 }

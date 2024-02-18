@@ -59,7 +59,8 @@ public interface IEventRepo {
     void deleteAll();
 
     /**
-     * Set to {@code true} the flag {@code isMailSent} of the event identified by its {@code eventId}.
+     * Set to {@code true} the flag {@code isMailSent} of the event identified by
+     * its {@code eventId}.
      * 
      * @param id Identifier of event.
      */
